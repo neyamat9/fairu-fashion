@@ -3,7 +3,7 @@ export interface ColorVariant {
   name: string;
   hex: string;
   accentHex: string;
-  texturePattern: string; // 'mustard-teal' | 'royal-blue' | 'terracotta' | 'indigo-orange' | 'emerald-noir'
+  texturePattern: string;
   fabricType: string;
 }
 
@@ -18,6 +18,8 @@ export interface FashionProduct3D {
   rating: number;
   reviewsCount: number;
   description: string;
+  imageFront: string;
+  imageBack: string;
   fabricDetails: {
     kameez: string;
     dupatta: string;
