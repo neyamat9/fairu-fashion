@@ -1,0 +1,363 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300..800&family=Outfit:wght@500..800&display=swap");
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Fairu Fashion brand theme */
+@theme inline {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Outfit", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* one radius everywhere: 4px */
+  --radius-xs: 4px;
+  --radius-sm: 4px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 4px;
+  --radius-2xl: 4px;
+  --radius-3xl: 4px;
+
+  --color-navy-50: #eef4fb;
+  --color-navy-100: #d9e6f5;
+  --color-navy-200: #b3cdeb;
+  --color-navy-300: #7fa9d9;
+  --color-navy-400: #4a80c2;
+  --color-navy-500: #1f5ca3;
+  --color-navy-600: #0a4a8f;
+  --color-navy-700: #053972;
+  --color-navy-800: #042d5a;
+  --color-navy-900: #031f3f;
+  --color-navy-950: #021529;
+
+  --color-orange-50: #fff7ea;
+  --color-orange-100: #feebcc;
+  --color-orange-200: #fdd79a;
+  --color-orange-300: #fbbe62;
+  --color-orange-400: #faab33;
+  --color-orange-500: #f99b10;
+  --color-orange-600: #e0840a;
+  --color-orange-700: #b9660a;
+  --color-orange-800: #8f4e0c;
+  --color-orange-900: #6f3e0d;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent: var(--sidebar-accent);
+}
+
+:root {
+  --radius: 4px;
+  --background: #f2f5fa;
+  --foreground: #0b1b33;
+  --card: #ffffff;
+  --card-foreground: #0b1b33;
+  --popover: #ffffff;
+  --popover-foreground: #0b1b33;
+  --primary: #053972;
+  --primary-foreground: #ffffff;
+  --secondary: #e8eef7;
+  --secondary-foreground: #053972;
+  --muted: #edf1f7;
+  --muted-foreground: #5b6b82;
+  --accent: #fff1d9;
+  --accent-foreground: #8f4e0c;
+  --brand: #f99b10;
+  --brand-foreground: #2a1700;
+  --destructive: #d92d20;
+  --success: #12875a;
+  --warning: #d97706;
+  --border: #e0e7f1;
+  --input: #cdd8e8;
+  --ring: #f99b10;
+  --chart-1: #053972;
+  --chart-2: #f99b10;
+  --chart-3: #1f5ca3;
+  --chart-4: #fbbe62;
+  --chart-5: #7fa9d9;
+  --sidebar: #05346a;
+  --sidebar-foreground: #d9e6f5;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-accent: rgba(255, 255, 255, 0.08);
+}
+
+.dark {
+  --background: #07111f;
+  --foreground: #e8eef7;
+  --card: #0e1d33;
+  --card-foreground: #e8eef7;
+  --popover: #0e1d33;
+  --popover-foreground: #e8eef7;
+  --primary: #f99b10;
+  --primary-foreground: #1d1000;
+  --secondary: #14263f;
+  --secondary-foreground: #d9e6f5;
+  --muted: #122238;
+  --muted-foreground: #94a8c4;
+  --accent: #2a2110;
+  --accent-foreground: #fbbe62;
+  --brand: #f99b10;
+  --brand-foreground: #1d1000;
+  --destructive: #f26b5e;
+  --success: #3ccf91;
+  --warning: #fbbe62;
+  --border: #1d3150;
+  --input: #2b4468;
+  --ring: #f99b10;
+  --chart-1: #7fa9d9;
+  --chart-2: #f99b10;
+  --chart-3: #4a80c2;
+  --chart-4: #fbbe62;
+  --chart-5: #b3cdeb;
+  --sidebar: #040e1c;
+  --sidebar-foreground: #b3cdeb;
+  --sidebar-border: rgba(255, 255, 255, 0.06);
+  --sidebar-accent: rgba(249, 155, 16, 0.12);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-size: 14px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  button,
+  [role="button"],
+  select {
+    touch-action: manipulation;
+  }
+  :focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--ring) 70%, transparent);
+    outline-offset: 2px;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading tracking-tight;
+  }
+  ::selection {
+    background: var(--brand);
+    color: var(--brand-foreground);
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--muted-foreground) 35%, transparent);
+  border-radius: 999px;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* ---- motion: short, subtle, and off for people who ask for less ---- */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.page-enter {
+  animation: page-enter 220ms ease-out both;
+}
+@keyframes row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.row-enter {
+  animation: row-enter 200ms ease-out both;
+}
+@keyframes flash-row {
+  0% {
+    background-color: color-mix(in srgb, var(--brand) 28%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+.flash-row {
+  animation: flash-row 1100ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .row-enter,
+  .flash-row {
+    animation: none !important;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+@keyframes bulk-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.bulk-in {
+  animation: bulk-in 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bulk-in {
+    animation: none !important;
+  }
+}
+
+/* soft elevation used by cards and popovers */
+:root {
+  --shadow-card: 0 1px 2px rgb(11 27 51 / 0.05), 0 0 0 1px rgb(11 27 51 / 0.01);
+  --shadow-lift: 0 6px 18px -6px rgb(11 27 51 / 0.18);
+}
+.dark {
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-lift: 0 10px 24px -8px rgb(0 0 0 / 0.55);
+}
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+.shadow-lift {
+  box-shadow: var(--shadow-lift);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* sign-in screens */
+.auth-grid {
+  background-image: linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at 30% 40%, #000 20%, transparent 75%);
+}
+@keyframes auth-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.auth-rise {
+  animation: auth-rise 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-rise {
+    animation: none !important;
+  }
+}
+
+/* sign-in screen: drifting capsules */
+@keyframes auth-drift {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, -58deg));
+  }
+  50% {
+    transform: translateY(-14px) rotate(var(--r, -58deg));
+  }
+}
+.auth-capsule {
+  animation: auth-drift 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-capsule {
+    animation: none !important;
+  }
+}
+
+/* moving between sign-in screens: only the form swaps (the colour side stays) */
+.auth-form {
+  view-transition-name: auth-form;
+}
+@keyframes auth-out {
+  to {
+    opacity: 0;
+    transform: translateX(-26px);
+  }
+}
+@keyframes auth-in {
+  from {
+    opacity: 0;
+    transform: translateX(26px);
+  }
+}
+::view-transition-old(auth-form) {
+  animation: auth-out 260ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+::view-transition-new(auth-form) {
+  animation: auth-in 460ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
+}
+/* everything else on the page is unchanged: no flash */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+.auth-swap {
+  animation: auth-in 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(auth-form),
+  ::view-transition-new(auth-form),
+  .auth-swap {
+    animation: none !important;
+  }
+}

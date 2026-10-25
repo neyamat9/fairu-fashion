@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.*
+
+# Production builds
+dist/
+build/
+.next/
+out/
+dist-ssr/
+
+# Environment files - NEVER commit real credentials
+.env
+.env.*
+!.env.example
+*.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+/logs/
+server/logs/
+frontend/logs/
+dashboard/logs/
+!**/src/**/logs
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+
+# Vercel & Cache
+.vercel/
+*.tsbuildinfo
+next-env.d.ts
+
+# Server uploads & generated
+/uploads/
+/generated/prisma

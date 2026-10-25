@@ -1,0 +1,111 @@
+# RaizBD API Build Progress
+
+## Infrastructure
+- [x] Rate limiting module (3 tiers: 10s/20, 60s/60, 3600s/1000)
+- [x] Pagination DTOs
+- [x] Search/filter DTOs
+
+## Customer (Storefront) APIs
+- [x] Products (list, detail, search, filter, featured, related, suggestions)
+- [x] Categories (tree, single)
+- [x] Brands (list, single)
+- [x] Auth (register, login, refresh, logout, profile, change password)
+- [x] Cart (add, update qty, remove, clear, count, get with totals)
+- [x] Orders (place, list, detail, cancel with stock restore)
+- [x] Wishlist (add, remove, list, check)
+- [x] Reviews (list with rating breakdown, create, helpful vote)
+- [x] Q&A (list, ask)
+- [x] Addresses (CRUD with set-default)
+- [x] PC Builder (components, compatibility, save/load/delete builds)
+- [x] Coupon apply (`POST /customer/coupons/apply`) — applied at order time, released on cancel
+- [x] Shipping options (`GET /customer/shipping/options`) — GLOBAL or inside/outside Dhaka, set from admin
+- [x] Checkout summary (`POST /customer/checkout/summary`)
+- [x] Forgot / reset password (`/customer/auth/forgot-password`, `/reset-password/verify`, `/reset-password`)
+- [x] Order tracking (`GET /customer/orders/track?orderNumber=&phone=`, public)
+- [x] Returns (`/customer/returns`: eligibility, create, list, detail, cancel)
+- [x] Public store settings (`GET /customer/settings`)
+- [x] Filter facets (`GET /customer/products/filters`) — brands, price range, specs (RAM/Storage/Color...), ratings, tags, availability
+- [x] Product list filters: multi-brand, spec (`spec=RAM:8GB|12GB`), rating, tag, on sale, in stock; sort by rating/name
+- [x] Search suggestions (`GET /customer/products/suggestions?q=`)
+- [x] Home sections (`/customer/products/new-arrivals`, `/best-sellers`, `/on-sale`, `GET /customer/home`)
+- [x] Guest cart (`x-guest-token` header, `POST /customer/cart/guest-token`, merge on login/register or `POST /customer/cart/merge`)
+- [x] Guest checkout (summary, coupons by phone, order, tracking, invoice)
+- [x] Invoice (`GET /customer/orders/:id/invoice`, guest `GET /customer/orders/invoice?orderNumber=&phone=`; html or json)
+- [x] Notifications (`/customer/notifications`: list, unread-count, read, read-all, delete, preferences)
+- [x] Order emails: placed, status changes, payment, returns (+ admin new-order alert)
+- [x] Newsletter (`POST /customer/newsletter/subscribe`, `/unsubscribe`)
+- [x] Contact form (`POST /customer/contact`)
+- [x] Public sub-categories (`GET /customer/categories/:slug/sub-categories`)
+- [x] Recently viewed (`/customer/recently-viewed`: track, list, clear; guests via `x-guest-token`, merged on login)
+- [x] Reviews: edit, delete, my reviews (`PATCH/DELETE /customer/reviews/:id`, `GET /customer/reviews/me`)
+- [x] Review photos (`POST /customer/uploads/review-images`, `imageIds` on create/edit; re-encoded to WebP, EXIF stripped)
+- [x] Reorder (`POST /customer/orders/:id/reorder`)
+- [x] Support tickets (`/customer/support-tickets`: create, list, detail, reply, close)
+- [x] BD locations (`/customer/locations`: divisions, districts, upazilas, tree, search; address forms validate against it)
+
+## Admin Dashboard APIs (all under `/api/admin/*`, JWT + ADMIN/SUPER_ADMIN)
+- [x] Dashboard stats (overview, revenue, orders by status, low stock, recent orders)
+- [x] Products: create/edit (auto slug, opening stock, tags, attributes, specs, variants), list with filters (status/category/brand/stock state/sort, search incl. SKU), detail, duplicate, delete (deactivates when it has orders)
+- [x] Scheduled discounts: `discountPrice` + `discountStart`/`discountEnd`; a 60 s job switches the live price and restores it afterwards
+- [x] Variants (`/admin/products/:id/variants`), photos (`/images`: upload, attach from library, main, reorder, delete), tags (`PUT /:id/tags`, `GET /admin/products/tags`)
+- [x] Inventory (`/admin/inventory`): summary, items, low-stock, out-of-stock, adjust (add/remove/set with reason), logs, CSV export, bulk CSV update (dry run)
+- [x] Media library (`/admin/uploads`): upload to folders, list, usage, delete
+- [x] Admin auth (`/admin/auth`): login, refresh, logout, me, update profile, change/forgot/reset password, locked seed-admin
+- [x] Reviews moderation (`/admin/reviews`: list, filters, approve/reject/flag, bulk, delete, stats) and product questions (`/admin/questions`: answer, delete; customer notified)
+- [x] Order management: filters + sort, courier/tracking, internal notes, edit address (optional shipping recalculation), edit items (stock + totals follow), create phone orders, bulk status, CSV export, payments and refunds records, COD marked paid on delivery
+- [x] Activity log (`/admin/activity-logs`): every admin and customer action (who, what, when, IP, result, field-level before/after), filters, stats, CSV export, per-record history, append-only
+- [x] Categories (full CRUD) — pre-existing
+- [x] SubCategories (full CRUD) — pre-existing
+- [x] Brands (full CRUD) — pre-existing
+- [x] Users (paginated list, detail, status/role update)
+- [x] Coupons (full CRUD + usage tracking)
+- [x] Banners (full CRUD)
+- [x] Flash Deals (full CRUD + product association)
+- [x] Returns (paginated list, detail, status transitions, restock on RECEIVED, partial/full refund)
+- [x] Coupons create/update validated (code uppercased, unique, scope by product/category/user)
+- [x] Settings (`/api/admin/settings`: site, payment, shipping, returns, email)
+- [x] Email settings: SMTP or Resend, sender, alerts on/off, `POST /admin/settings/email/test`; secrets encrypted at rest
+- [x] Dashboard analytics (`/admin/dashboard/*`): overview vs previous period, sales over time (day/week/month, gaps filled), top products and categories, revenue by payment method / zone / source, new customers per period, low stock, one-call bundle; `from`/`to` filters (Bangladesh days); cancelled and refunded orders are no longer counted as revenue
+- [x] Reports (`/admin/reports/*`, `format=json|csv|xlsx`): sales, product performance (with estimated profit), stock valuation, coupon performance, customers
+- [x] Customers (`/admin/users`): filters/sort, detail with lifetime value and counts, orders, addresses, tickets, reviews, coupon use, private notes, export CSV/Excel; status change signs the customer out; only a super admin can grant or remove admin access
+- [x] Admin bell (`/admin/notifications`): new orders, bKash payments to verify, new tickets and replies, returns, low / out of stock, contact messages, questions; unread count, live summary, read / read-all / delete
+- [x] Audit log (`/admin/audit-logs`): who changed prices, stock, order status, settings, coupons, customers (old → new, IP); CSV export
+- [x] Coupon tools: usage report, per-customer usage, usage export, bulk code generation (up to 1000, CSV/Excel), state filter; used coupons cannot be deleted
+- [x] Back in stock: `POST /customer/back-in-stock` (guest or logged in), email alert within a minute of restocking, `/admin/back-in-stock` (waiting list, requests, send now)
+- [x] Display order: `PUT /admin/{category,brand,sub-category,banners}/reorder`
+- [x] Return refunds write refund records (`RefundTransaction` linked to the return, capped at what was received, order paid amount and payment status updated, audit entry); never-paid orders finish with a clear note
+- [x] Editing order items recalculates the coupon discount with the checkout rules (own use not counted against limits); a coupon that no longer applies is removed and its use given back; a hand-set discount still wins
+- [x] Guest orders can be moved into an account: `POST /customer/orders/claim` (order number + the phone it was placed with, up to 10; race-safe, no order enumeration)
+- [x] Order invoice (`GET /admin/orders/:id/invoice`)
+- [x] Product filterable attributes (`attributes` on product create/update)
+- [x] Support tickets (list with counts, thread with internal notes, reply, status, priority, assignee)
+- [x] Newsletter subscribers (list, CSV export, delete)
+- [x] Contact messages (list, read, note/status, reply by email, delete)
+
+## Frontend Integration
+- [x] API client with auto-refresh token + Bearer auth
+- [x] Products service (list, featured, search, bySlug, related)
+- [x] Categories service (list, bySlug)
+- [x] Brands service (list, bySlug)
+- [x] Auth service (register, login, logout, profile, changePassword)
+- [x] Cart service (get, count, add, update, remove, clear)
+- [x] Orders service (list, byId, place, cancel)
+- [x] Wishlist service (list, check, add, remove)
+- [x] Reviews service (byProduct, create, vote)
+- [x] Address service (CRUD + setDefault)
+- [x] PC Builder service (components, compatible, builds CRUD)
+- [x] AuthContext now supports dual-mode (mock fallback when no backend)
+
+## Dashboard (Vite) Integration
+- [x] Admin API client with auto-refresh token
+- [x] Admin Auth context + login page + route guards
+- [x] Dashboard Overview page (stats cards, orders by status, recent orders)
+- [x] Products list + create/edit pages
+- [x] Orders list with inline status changer
+- [x] Users list with search
+- [x] Coupons list with create form + delete
+- [x] Banners list with create form
+- [x] Flash Deals list
+- [x] Returns list with approve/reject/refund actions
+- [x] Updated Sidebar menu with all routes + sections
+- [x] Logout + user display in Navbar

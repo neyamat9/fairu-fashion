@@ -1,0 +1,21 @@
+{
+  "name": "fairu-fashion",
+  "version": "1.0.0",
+  "description": "Fairu Fashion - Women's Dress & Fashion E-Commerce Platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "fairu-fashion",
+    "womens-dresses",
+    "fashion",
+    "ecommerce"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}
