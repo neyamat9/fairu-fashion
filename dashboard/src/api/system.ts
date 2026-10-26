@@ -19,9 +19,29 @@ export const reportsApi = {
   run: (path: string, params: Record<string, unknown>) => api.get<ReportTable>(path, { params: clean({ ...params, format: "json" }) }).then((r) => r.data),
 };
 
+export interface CraftedProductItem {
+  productId: string;
+  name: string;
+  slug: string;
+  price: number;
+  imageUrl: string;
+  categoryTag?: string;
+  bgGradient?: string;
+}
+
+export interface CraftedSectionSettings {
+  title?: string;
+  subtitle?: string;
+  items: CraftedProductItem[];
+}
+
 // ---------- settings ----------
 export interface Settings {
-  site: { storeName: string; tagline: string; logoUrl: string | null; faviconUrl: string | null; contactEmail: string | null; hotline: string | null; whatsapp: string | null; address: string | null; businessHours: string | null; currency: string; currencySymbol: string; metaTitle: string | null; metaDescription: string | null; socialLinks: Record<string, string> };
+  site: {
+    storeName: string; tagline: string; logoUrl: string | null; faviconUrl: string | null; contactEmail: string | null; hotline: string | null; whatsapp: string | null; address: string | null; businessHours: string | null; currency: string; currencySymbol: string; metaTitle: string | null; metaDescription: string | null; socialLinks: Record<string, string>;
+    heroBgUrl?: string | null; heroModels?: string[]; heroBadge?: string | null; heroTitle?: string | null; heroHighlight?: string | null; heroDescription?: string | null; heroButtonText?: string | null; heroButtonLink?: string | null; heroIntervalSeconds?: number;
+    craftedSection?: CraftedSectionSettings;
+  };
   payment: { codEnabled: boolean; bkashEnabled: boolean; bkashNumber: string | null; bkashAccountType: "personal" | "merchant" | "agent"; bkashInstructions: string | null; nagadEnabled: boolean; nagadNumber: string | null; nagadAccountType: "personal" | "merchant" | "agent"; nagadInstructions: string | null; rocketEnabled: boolean; rocketNumber: string | null; rocketAccountType: "personal" | "merchant" | "agent"; rocketInstructions: string | null };
   shipping: { mode: "GLOBAL" | "ZONE"; globalRate: number; globalMinDays: number; globalMaxDays: number; insideDhakaRate: number; insideDhakaMinDays: number; insideDhakaMaxDays: number; outsideDhakaRate: number; outsideDhakaMinDays: number; outsideDhakaMaxDays: number; insideDhakaCities: string[]; freeShippingThreshold: number | null };
   returns: { returnsEnabled: boolean; returnWindowDays: number; policyText: string | null };

@@ -29,6 +29,26 @@ export class SocialLinksDto {
   @ApiPropertyOptional() @IsOptional() @IsString() linkedin?: string;
 }
 
+export class CraftedProductItemDto {
+  @ApiProperty() @IsString() productId!: string;
+  @ApiProperty() @IsString() name!: string;
+  @ApiProperty() @IsString() slug!: string;
+  @ApiProperty() @IsNumber() price!: number;
+  @ApiProperty() @IsString() imageUrl!: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() categoryTag?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() bgGradient?: string;
+}
+
+export class CraftedSectionSettingsDto {
+  @ApiPropertyOptional() @IsOptional() @IsString() title?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() subtitle?: string;
+  @ApiProperty({ type: [CraftedProductItemDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CraftedProductItemDto)
+  items!: CraftedProductItemDto[];
+}
+
 export class UpdateSiteSettingsDto {
   @ApiPropertyOptional() @IsOptional() @IsString() storeName?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() tagline?: string;
@@ -95,6 +115,65 @@ export class UpdateSiteSettingsDto {
   @ValidateNested()
   @Type(() => SocialLinksDto)
   socialLinks?: SocialLinksDto;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  heroBgUrl?: string | null;
+
+  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  heroModels?: string[];
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  heroBadge?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  heroTitle?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  heroHighlight?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  heroDescription?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  heroButtonText?: string | null;
+
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  @ValidateIf((_, v) => v !== null)
+  @IsString()
+  heroButtonLink?: string | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  heroIntervalSeconds?: number;
+
+  @ApiPropertyOptional({ type: CraftedSectionSettingsDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => CraftedSectionSettingsDto)
+  craftedSection?: CraftedSectionSettingsDto;
 }
 
 export class UpdatePaymentSettingsDto {

@@ -27,6 +27,22 @@ export interface SocialLinks {
   linkedin?: string;
 }
 
+export interface CraftedProductItem {
+  productId: string;
+  name: string;
+  slug: string;
+  price: number;
+  imageUrl: string;
+  categoryTag?: string;
+  bgGradient?: string;
+}
+
+export interface CraftedSectionSettings {
+  title?: string;
+  subtitle?: string;
+  items: CraftedProductItem[];
+}
+
 export interface SiteSettings {
   storeName: string;
   tagline: string;
@@ -42,6 +58,16 @@ export interface SiteSettings {
   metaTitle: string | null;
   metaDescription: string | null;
   socialLinks: SocialLinks;
+  heroBgUrl?: string | null;
+  heroModels?: string[];
+  heroBadge?: string | null;
+  heroTitle?: string | null;
+  heroHighlight?: string | null;
+  heroDescription?: string | null;
+  heroButtonText?: string | null;
+  heroButtonLink?: string | null;
+  heroIntervalSeconds?: number;
+  craftedSection?: CraftedSectionSettings;
 }
 
 export type MobileBankingMethod = 'BKASH' | 'NAGAD' | 'ROCKET';
@@ -182,6 +208,71 @@ export const DEFAULT_SETTINGS: SettingsMap = {
     metaTitle: "Fairu Fashion | Elegant Women's Dresses & Wear",
     metaDescription: "Discover exquisite women's dresses, party wear, ethnic kurtis, modest abayas, and chic evening gowns at Fairu Fashion.",
     socialLinks: {},
+    heroBgUrl: '/hero/hero-slide-1.webp',
+    heroModels: [
+      '/hero/hero-slide-1.webp',
+      '/hero/hero-slide-2.webp',
+      '/hero/hero-slide-3.webp',
+    ],
+    heroBadge: 'TIMELESS ELEGANCE',
+    heroTitle: 'Grace in Every',
+    heroHighlight: 'Three Piece',
+    heroDescription: "Discover our exclusive collection of women's three piece outfits — crafted for your everyday grace and special moments.",
+    heroButtonText: 'Shop Now',
+    heroButtonLink: '/category/three-piece',
+    heroIntervalSeconds: 5,
+    craftedSection: {
+      title: 'CRAFTED FOR THE ELEGANT WOMAN',
+      subtitle:
+        'Essential silhouettes, rich hand-woven textures, and effortless luxury for every occasion.',
+      items: [
+        {
+          productId: 'zamzam-casual',
+          name: 'Zamzam Royal Three Piece',
+          slug: 'three-piece',
+          price: 3450,
+          imageUrl: '/curated/curated-1.jpg',
+          categoryTag: 'CASUAL WEAR',
+          bgGradient: 'from-[#FDF2F4] via-[#F9E2E7] to-[#F1CAD4]',
+        },
+        {
+          productId: 'bin-hamid-luxe',
+          name: 'Bin Hamid Luxury Lawn',
+          slug: 'three-piece',
+          price: 3950,
+          imageUrl: '/curated/curated-2.jpg',
+          categoryTag: 'LUXURY LAWN',
+          bgGradient: 'from-[#FEF9EE] via-[#FDF0D5] to-[#F7E1B5]',
+        },
+        {
+          productId: 'festive-embroidered',
+          name: 'Summer Floral Festive',
+          slug: 'three-piece',
+          price: 2850,
+          imageUrl: '/curated/curated-3.jpg',
+          categoryTag: 'FESTIVE WEAR',
+          bgGradient: 'from-[#F0F8FD] via-[#DBEFFC] to-[#C3E4FA]',
+        },
+        {
+          productId: 'royal-silk',
+          name: 'Gul Ahmed Mint Silk',
+          slug: 'three-piece',
+          price: 4200,
+          imageUrl: '/curated/curated-4.jpg',
+          categoryTag: 'ROYAL SILK',
+          bgGradient: 'from-[#EFFCF6] via-[#D8F8EA] to-[#BAF2D8]',
+        },
+        {
+          productId: 'rose-organza',
+          name: 'Fairu Rose Organza Edit',
+          slug: 'three-piece',
+          price: 4800,
+          imageUrl: '/curated/curated-5.jpg',
+          categoryTag: 'EXCLUSIVE COUTURE',
+          bgGradient: 'from-[#FDF3F6] via-[#FBE2EB] to-[#F7CADB]',
+        },
+      ],
+    },
   },
   payment: {
     codEnabled: true,

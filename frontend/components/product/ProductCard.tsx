@@ -5,11 +5,10 @@ import { useQuickAdd } from "@/lib/hooks/use-quick-add";
 import { getProductBySlug } from "@/lib/services/products.service";
 import { playClick } from "@/lib/sound";
 import { useInView } from "@/lib/hooks/use-in-view";
-import { useCompare } from "@/lib/hooks/use-compare";
 import { useWishlist } from "@/lib/hooks/use-wishlist";
 import { useRouter } from "next/navigation";
 import type { Product, ProductVariant } from "@/lib/types";
-import { Flame, GitCompareArrows, Heart, Loader2, ShoppingCart, Star, X } from "lucide-react";
+import { Flame, Heart, Loader2, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
@@ -50,8 +49,6 @@ export default function ProductCard({
   // option picker for products with colours / sizes (so the customer never leaves the card)
   const [picker, setPicker] = useState<{ loading: boolean; variants: ProductVariant[] } | null>(null);
   const { addToVault, removeFromVault, isInVault } = useWishlist();
-  const { addToCompare, removeFromCompare, isInCompare, compareList } = useCompare();
-  const inCompare = isInCompare(product.id);
   const router = useRouter();
   // start loading the product page as soon as the pointer is over the card, so the click opens it at once
   const prefetched = useRef(false);
@@ -59,13 +56,6 @@ export default function ProductCard({
     if (prefetched.current) return;
     prefetched.current = true;
     router.prefetch(`/products/${product.slug}`);
-  }
-
-  function toggleCompare() {
-    if (inCompare) return removeFromCompare(product.id);
-    if (compareList.length >= 3) return void toast.warning("Maximum 3 products can be compared at once");
-    addToCompare(product);
-    toast.success(`${product.name} added to compare`, { duration: 2000 });
   }
   const { ref, inView } = useInView({ threshold: 0.08 });
   const [isAnimating, setIsAnimating] = useState(false);
@@ -238,15 +228,6 @@ export default function ProductCard({
             aria-hidden="true"
           />
         </button>
-        <button
-          type="button"
-          onClick={toggleCompare}
-          aria-pressed={inCompare}
-          aria-label={inCompare ? `Remove ${product.name} from compare` : `Add ${product.name} to compare`}
-          className={`absolute right-3 top-12 z-10 flex h-8 w-8 items-center justify-center rounded shadow-sm backdrop-blur transition-colors ${inCompare ? "bg-brand-orange text-on-orange" : "bg-card/90 text-muted-foreground hover:text-accent-text"}`}
-        >
-          <GitCompareArrows className="h-4 w-4" aria-hidden="true" />
-        </button>
       </div>
 
       {/* ── Info ────────────────────────────────────── */}
@@ -260,25 +241,6 @@ export default function ProductCard({
             {product.name}
           </h3>
         </Link>
-
-        {/* Rating + review count */}
-        <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs" aria-label={reviewCount > 0 ? `Rated ${rating.toFixed(1)} out of 5 from ${reviewCount} reviews` : "No reviews yet"}>
-          <span className="flex" aria-hidden="true">
-            {[1, 2, 3, 4, 5].map((n) => (
-              <Star
-                key={n}
-                className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${n <= Math.round(rating) ? "fill-brand-orange text-brand-orange" : "fill-transparent text-muted-foreground/40"}`}
-              />
-            ))}
-          </span>
-          {reviewCount > 0 ? (
-            <span className="whitespace-nowrap font-medium text-muted-foreground">
-              <span className="font-bold text-foreground">{rating.toFixed(1)}</span> ({reviewCount})
-            </span>
-          ) : (
-            <span className="text-muted-foreground">No reviews</span>
-          )}
-        </div>
 
         <div className="mb-3 flex items-center gap-3 text-[11px] font-medium text-muted-foreground">
           {showSold && product.soldLast24h > 0 && !outOfStock && (

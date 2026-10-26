@@ -40,7 +40,7 @@ export function ImageField({ label, value, onChange, folder = "general", classNa
           {value && <Button type="button" size="sm" variant="ghost" onClick={() => onChange(null)}><Trash2 className="text-destructive" /> Remove</Button>}
         </div>
       </div>
-      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/gif" hidden onChange={(e) => void upload(e.target.files)} />
+      <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" hidden onChange={(e) => void upload(e.target.files)} />
       {lib && <LibraryDialog onPick={(u) => { onChange(u); setLib(false); }} onClose={() => setLib(false)} />}
     </div>
   );

@@ -2,11 +2,10 @@
 
 import BackInStockForm from "@/components/product/BackInStockForm";
 import { useCart } from "@/lib/hooks/use-cart";
-import { useCompare } from "@/lib/hooks/use-compare";
 import { useWishlist } from "@/lib/hooks/use-wishlist";
 import { playClick } from "@/lib/sound";
 import type { Product, ProductVariant } from "@/lib/types";
-import { ArrowRightLeft, Heart, Info, Landmark, Loader2, MessageSquare, Minus, Plus, ShoppingCart, Star } from "lucide-react";
+import { Heart, Info, Landmark, Loader2, MessageSquare, Minus, Plus, ShoppingCart, Star } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -27,7 +26,6 @@ const chip = "inline-flex items-center gap-1 rounded border border-border bg-bac
 export default function ProductSummary({ product, atcRef, onVariantChange, paymentMethods = ["Cash on Delivery"] }: ProductSummaryProps) {
   const { addToCart } = useCart();
   const { addToVault, removeFromVault, isInVault } = useWishlist();
-  const { addToCompare, removeFromCompare, isInCompare, compareList } = useCompare();
 
   const extra = product as Product & { avgRating?: number; reviewCount?: number; warranty?: string };
   const rating = extra.avgRating ?? 0;
@@ -44,7 +42,6 @@ export default function ProductSummary({ product, atcRef, onVariantChange, payme
   const hasDiscount = !!oldPrice && oldPrice > price;
   const image = product.images.find((i) => i.isPrimary) ?? product.images[0];
   const inVault = isInVault(product.id);
-  const inCompare = isInCompare(product.id);
 
   useEffect(() => {
     onVariantChange?.(variant);
@@ -84,13 +81,6 @@ export default function ProductSummary({ product, atcRef, onVariantChange, payme
       addToVault({ productId: product.id, slug: product.slug, name: product.name, price: product.price, originalPrice: product.originalPrice, imageUrl: image?.url ?? "", stock: product.stock });
       toast.success("Added to wishlist", { duration: 2000 });
     }
-  }
-
-  function toggleCompare() {
-    if (inCompare) return removeFromCompare(product.id);
-    if (compareList.length >= 3) return void toast.warning("Maximum 3 products can be compared at once");
-    addToCompare(product);
-    toast.success(`${product.name} added to compare`, { duration: 2000 });
   }
 
   const colors = product.variants.filter((v) => v.type === "color");
@@ -311,17 +301,6 @@ export default function ProductSummary({ product, atcRef, onVariantChange, payme
         >
           <Heart className="h-4 w-4" fill={inVault ? "currentColor" : "none"} />
           Wishlist
-        </button>
-        <button
-          type="button"
-          onClick={toggleCompare}
-          aria-pressed={inCompare}
-          className={`flex h-11 items-center gap-2 rounded border px-4 text-sm font-semibold transition-colors ${
-            inCompare ? "border-brand-orange bg-brand-orange/15 text-accent-text" : "border-border bg-secondary text-foreground hover:border-brand-orange"
-          }`}
-        >
-          <ArrowRightLeft className="h-4 w-4" />
-          Compare
         </button>
       </div>
 

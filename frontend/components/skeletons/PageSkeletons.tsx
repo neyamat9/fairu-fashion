@@ -37,20 +37,45 @@ export function CardsSkeleton({ count = 8, cols = "grid-cols-2 lg:grid-cols-4" }
   );
 }
 
-/** Home page: hero banner + tiles, then a category grid and product rows */
+/** Home page: full architectural luxury hero scene, followed by curated categories and product rows */
 export function HomeSkeleton() {
   return (
     <div aria-busy="true" aria-label="Loading">
-      <section className="bg-background">
-        <div className="mx-auto max-w-[1440px] px-4 pb-16 pt-6 md:px-8 lg:pb-20 lg:pt-8">
-          <div className="grid gap-4 lg:h-[480px] lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-            <Block className="aspect-[4/3] w-full sm:aspect-[16/10] lg:aspect-auto lg:h-full" />
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-1 lg:grid-rows-2">
-              <Block className="min-h-[170px]" />
-              <Block className="min-h-[170px]" />
+      {/* 1. Full Architectural Editorial Hero Skeleton */}
+      <section className="relative w-full overflow-hidden bg-[#EFE8DF] select-none min-h-[660px] sm:min-h-[740px] lg:min-h-[820px] xl:min-h-[880px] flex flex-col justify-between">
+        {/* Soft atmospheric gradient */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#F6F1EA]/80 via-[#F6F1EA]/50 to-transparent pointer-events-none lg:w-[65%]" />
+
+        <div className="relative z-20 w-full max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 flex-1 flex flex-col justify-center my-auto pt-28 sm:pt-32 lg:pt-36 pb-12 sm:pb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 items-center gap-6 lg:gap-8">
+            {/* Left Column: Wall Typography Skeleton */}
+            <div className="lg:col-span-7 xl:col-span-6 z-20 flex flex-col justify-center pt-2 sm:pt-4 lg:pt-0 max-w-[620px]">
+              {/* Headline Line 1 */}
+              <div className="h-10 sm:h-14 lg:h-16 w-3/4 max-w-[440px] rounded-lg bg-[#DACEC0]/70 animate-pulse" />
+              {/* Headline Line 2 (Italic Highlight) */}
+              <div className="h-10 sm:h-14 lg:h-16 w-3/5 max-w-[320px] rounded-lg bg-[#DACEC0]/50 animate-pulse mt-3 sm:mt-4" />
+
+              {/* Description Paragraph */}
+              <div className="space-y-2.5 mt-6 sm:mt-8">
+                <div className="h-3.5 sm:h-4 w-full max-w-[460px] rounded bg-[#DACEC0]/60 animate-pulse" />
+                <div className="h-3.5 sm:h-4 w-4/5 max-w-[380px] rounded bg-[#DACEC0]/50 animate-pulse" />
+              </div>
+
+              {/* CTA Button Skeleton */}
+              <div className="h-12 sm:h-14 w-36 sm:w-40 rounded-md bg-[#9E596B]/30 animate-pulse mt-8 sm:mt-10" />
+            </div>
+
+            {/* Right Column: Architectural Archway Silhouette Placeholder */}
+            <div className="hidden lg:flex lg:col-span-5 xl:col-span-6 items-center justify-end pointer-events-none">
+              <div className="w-[340px] xl:w-[420px] h-[500px] xl:h-[600px] rounded-t-full bg-[#E5DCD0]/60 animate-pulse border-8 border-white/40 shadow-inner flex items-center justify-center">
+                <div className="w-2/3 h-3/4 rounded-t-full bg-[#DACEC0]/40 animate-pulse" />
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Subtle bottom spacer */}
+        <div className="h-4 sm:h-6 pointer-events-none" />
       </section>
       <section className="bg-secondary/60 py-16 md:py-20">
         <div className="mx-auto max-w-[1440px] px-4 md:px-8">

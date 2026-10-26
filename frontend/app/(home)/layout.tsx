@@ -1,7 +1,8 @@
 import SiteFooter from "@/components/layout/SiteFooter";
 import { BrowseProvider } from "@/components/browse/BrowseModals";
 import NavigationGate from "@/components/layout/NavigationGate";
-import SiteChrome from "@/components/layout/SiteChrome";
+import LuxuryHeader from "@/components/layout/LuxuryHeader";
+import MainContainer from "@/components/layout/MainContainer";
 import { getShopCategories } from "@/lib/services/categories.service";
 import { getBrands } from "@/lib/services/brands.service";
 import { getSiteSettings } from "@/lib/services/site.service";
@@ -27,10 +28,10 @@ export default async function HomeLayout({
   return (
     <BrowseProvider categories={categories} brands={brands}>
       <div className="min-h-screen flex flex-col bg-background">
-        <SiteChrome categories={categories} />
-        <main className="flex-1">
-            <NavigationGate>{children}</NavigationGate>
-          </main>
+        <LuxuryHeader categories={categories} />
+        <MainContainer>
+          <NavigationGate>{children}</NavigationGate>
+        </MainContainer>
         <SiteFooter settings={settings} categories={categories} />
       </div>
     </BrowseProvider>

@@ -1,33 +1,54 @@
-import BestSellingProducts from "@/components/home/BestSellingProducts";
-import BrandShowcase from "@/components/home/BrandShowcase";
+import { ShowcaseHero } from "@/components/hero2";
 import CategoryGrid from "@/components/home/CategoryGrid";
+import { CraftedForWomanSection } from "@/components/home/CraftedForWomanSection";
+import NewArrivalsSection from "@/components/home/NewArrivalsSection";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
-import { FashionHero } from "@/components/fashion/FashionHero";
-import { getBrands } from "@/lib/services/brands.service";
+import BestSellingProducts from "@/components/home/BestSellingProducts";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 import { getShopCategories } from "@/lib/services/categories.service";
-import { getHomeData, getProductsByBrand } from "@/lib/services/products.service";
-import type { Product } from "@/lib/types";
+import { getHomeData } from "@/lib/services/products.service";
 import { getSiteSettings } from "@/lib/services/site.service";
 
 export default async function HomePage() {
-  const [categories, home, _settings] = await Promise.all([
+  const [categories, home, settings] = await Promise.all([
     getShopCategories(),
-    getHomeData().catch(() => ({ featured: [], newArrivals: [], bestSellers: [], onSale: [] })),
+    getHomeData().catch(() => ({
+      featured: [],
+      newArrivals: [],
+      bestSellers: [],
+      onSale: [],
+    })),
     getSiteSettings(),
   ]);
 
-  // every brand's products, fetched together so switching brands on the page is instant
-  const brands = (await getBrands()).filter((b) => b.productCount > 0);
-  const lists = await Promise.all(brands.map((b) => getProductsByBrand(b.slug).catch(() => [] as Product[])));
-  const productsByBrand: Record<string, Product[]> = Object.fromEntries(brands.map((b, i) => [b.slug, lists[i]]));
-
   return (
     <>
-      <FashionHero />
+      {/* 1. Hero Showcase with perfected architectural luxury layout */}
+      <ShowcaseHero settings={settings} />
+
+      {/* 2. Visual Category Grid */}
       <CategoryGrid categories={categories} />
-      {home.featured.length > 0 && <FeaturedProducts products={home.featured.slice(0, 8)} />}
-      {home.bestSellers.length > 0 && <BestSellingProducts products={home.bestSellers.slice(0, 8)} />}
-      <BrandShowcase brands={brands} productsByBrand={productsByBrand} />
+
+      {/* 3. Expanding Accordion Gallery: "Crafted for the Elegant Woman" */}
+      <CraftedForWomanSection settings={settings?.site?.craftedSection} />
+
+      {/* 4. New Arrivals Showcase */}
+      {home.newArrivals.length > 0 && (
+        <NewArrivalsSection products={home.newArrivals} />
+      )}
+
+      {/* 5. Featured Products */}
+      {home.featured.length > 0 && (
+        <FeaturedProducts products={home.featured.slice(0, 8)} />
+      )}
+
+      {/* 6. Best Selling Products */}
+      {home.bestSellers.length > 0 && (
+        <BestSellingProducts products={home.bestSellers.slice(0, 8)} />
+      )}
+
+      {/* 7. Modern Animated Testimonials Section */}
+      <TestimonialsSection />
     </>
   );
 }

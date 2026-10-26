@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 // Product images are served by the API server (…/uploads/…): allow its host.
-const api = new URL(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api");
+const api = new URL(
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api",
+);
 const apiPattern = {
   protocol: api.protocol.replace(":", "") as "http" | "https",
   hostname: api.hostname,

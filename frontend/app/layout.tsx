@@ -1,16 +1,15 @@
 import CartSidebar from "@/components/cart/CartSidebar";
+import FloatingCartBadge from "@/components/layout/FloatingCartBadge";
 import { AuthModalProvider } from "@/components/auth/AuthModal";
-import CompareBar from "@/components/compare/CompareBar";
 import FreshnessWatcher from "@/components/layout/FreshnessWatcher";
 import ScrollToTop from "@/components/motion/ScrollToTop";
 import SmoothScroll from "@/components/motion/SmoothScroll";
 import ThemeProvider from "@/components/theme/ThemeProvider";
 import { AuthProvider } from "@/lib/context/AuthContext";
 import { CartProvider } from "@/lib/context/CartContext";
-import { CompareProvider } from "@/lib/context/CompareContext";
 import { WishlistProvider } from "@/lib/context/WishlistContext";
 import type { Metadata } from "next";
-import { Inter, Outfit } from "next/font/google";
+import { Inter, Outfit, Lilita_One, Poppins, Playfair_Display, Cormorant_Garamond } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -25,6 +24,31 @@ const outfit = Outfit({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800", "900"],
 });
+
+const lilita = Lilita_One({
+  variable: "--font-lilita",
+  subsets: ["latin"],
+  weight: ["400"],
+});
+
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
 
 export const metadata: Metadata = {
   title: {
@@ -56,7 +80,7 @@ export default function RootLayout({
           <style>{"[data-reveal],[data-hero-item]{opacity:1!important}"}</style>
         </noscript>
       </head>
-      <body className={`${inter.variable} ${outfit.variable} antialiased`}>
+      <body className={`${inter.variable} ${outfit.variable} ${lilita.variable} ${poppins.variable} ${playfair.variable} ${cormorant.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
           <SmoothScroll />
           <ScrollToTop />
@@ -64,14 +88,12 @@ export default function RootLayout({
           <AuthProvider>
             <CartProvider>
               <WishlistProvider>
-                <CompareProvider>
-                  <AuthModalProvider>
-                    {children}
-                    {/* Global overlays — rendered once, visibility driven by context */}
-                    <CartSidebar />
-                    <CompareBar />
-                  </AuthModalProvider>
-                </CompareProvider>
+                <AuthModalProvider>
+                  {children}
+                  {/* Global overlays — rendered once, visibility driven by context */}
+                  <CartSidebar />
+                  <FloatingCartBadge />
+                </AuthModalProvider>
               </WishlistProvider>
             </CartProvider>
           </AuthProvider>

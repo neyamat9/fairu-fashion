@@ -4,9 +4,8 @@ import { useAuthModal } from "@/components/auth/AuthModal";
 import { startNavigation } from "@/components/layout/NavigationGate";
 import { gsap } from "@/components/motion/gsap";
 import { useAuth } from "@/lib/hooks/use-auth";
-import { useCompare } from "@/lib/hooks/use-compare";
 import { useWishlist } from "@/lib/hooks/use-wishlist";
-import { GitCompareArrows, Heart, LifeBuoy, LogOut, type LucideIcon, Moon, Package, PackageSearch, RotateCcw, Sun, UserRound, X } from "lucide-react";
+import { Heart, LifeBuoy, LogOut, type LucideIcon, Moon, Package, PackageSearch, RotateCcw, Sun, UserRound, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -42,7 +41,6 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
   const { user, isLoading, logout } = useAuth();
   const { openAuth } = useAuthModal();
   const { vaultCount } = useWishlist();
-  const { compareList } = useCompare();
   const { resolvedTheme, setTheme } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
@@ -91,7 +89,6 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
   const items: Item[] = [
     { href: "/orders", label: "My orders", icon: Package },
     { href: "/wishlist", label: "Wishlist", icon: Heart, badge: vaultCount },
-    { href: "/compare", label: "Compare", icon: GitCompareArrows, badge: compareList.length },
     { href: "/track-order", label: "Track an order", icon: PackageSearch },
     { href: "/returns-policy", label: "Return policy", icon: RotateCcw },
     { href: "/contact", label: "Contact us", icon: LifeBuoy },

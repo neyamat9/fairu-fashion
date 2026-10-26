@@ -27,7 +27,7 @@ const MAX_UPLOADS_PER_DAY = 60;
 
 // What we accept as input. Everything is re-encoded to WebP, so the stored
 // file is never the user's original bytes.
-const ALLOWED_INPUT_FORMATS = new Set(['jpeg', 'png', 'webp', 'gif', 'avif']);
+const ALLOWED_INPUT_FORMATS = new Set(['jpeg', 'png', 'webp', 'gif', 'avif', 'svg']);
 
 const FULL_SIZE_PX = 1600;
 const THUMB_SIZE_PX = 400;

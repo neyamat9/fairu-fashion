@@ -176,10 +176,20 @@ export function errorMessage(e: unknown, fallback = "Something went wrong"): str
   return fallback;
 }
 
-// /uploads/... paths come back relative when the server has no public URL set
 export function assetUrl(url?: string | null): string {
   if (!url) return "";
-  if (/^https?:\/\//i.test(url) || url.startsWith("data:")) return url;
+  if (
+    /^https?:\/\//i.test(url) ||
+    url.startsWith("data:") ||
+    url.startsWith("/curated/") ||
+    url.startsWith("/hero/") ||
+    url.startsWith("/garments/") ||
+    url.startsWith("/textures/") ||
+    url.startsWith("/clouds/") ||
+    url.startsWith("/logo")
+  ) {
+    return url;
+  }
   return `${ASSET_BASE}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 

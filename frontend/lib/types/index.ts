@@ -294,16 +294,6 @@ export interface AuthContextValue {
   updateProfile: (data: Partial<User>) => Promise<{ success: boolean; error?: string }>;
 }
 
-export interface CompareContextValue {
-  compareList: Product[];
-  addToCompare: (product: Product) => void;
-  removeFromCompare: (productId: string) => void;
-  clearCompare: () => void;
-  /** replace the whole list (used by the compare page, whose address decides what is compared) */
-  replaceCompare: (products: Product[]) => void;
-  isInCompare: (productId: string) => boolean;
-}
-
 export interface ProductFilters {
   categories?: string[];
   brands?: string[];

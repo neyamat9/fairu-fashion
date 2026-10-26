@@ -3,6 +3,7 @@
 import CategoryNav from "@/components/layout/CategoryNav";
 import SiteHeader from "@/components/layout/SiteHeader";
 import type { Category } from "@/lib/types";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 /**
@@ -11,44 +12,68 @@ import { useEffect, useRef, useState } from "react";
  * up brings the full header gliding back.
  */
 export default function SiteChrome({ categories }: { categories: Category[] }) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const wrap = useRef<HTMLDivElement>(null);
   const headerBox = useRef<HTMLDivElement>(null);
-  const [compact, setCompact] = useState(false);
-  const [headerH, setHeaderH] = useState(0);
+  const [compact, setCompact] = useState(isHome);
+  const [headerH, setHeaderH] = useState(80);
+  const [scrolledPastHero, setScrolledPastHero] = useState(!isHome);
 
-  // Tell the rest of the page how much navbar is currently pinned (full header + category bar, or just the bar),
-  // so sticky sidebars can sit just below it and glide as it hides/shows.
+  useEffect(() => {
+    setScrolledPastHero(!isHome);
+    setCompact(isHome);
+  }, [isHome]);
+
+  // Tell the rest of the page how much navbar is currently pinned
   useEffect(() => {
     const total = wrap.current?.offsetHeight ?? 0;
     const bar = Math.max(0, total - headerH);
     document.documentElement.style.setProperty("--sticky-top", `${(compact ? bar : total) + 16}px`);
-    // full height (header + category bar): what is pinned once the header slides back in
     document.documentElement.style.setProperty("--chrome-full", `${total + 16}px`);
   }, [compact, headerH]);
 
   useEffect(() => {
-    const measure = () => setHeaderH(headerBox.current?.offsetHeight ?? 0);
+    const measure = () => setHeaderH(headerBox.current?.offsetHeight ?? 80);
     measure();
     const ro = new ResizeObserver(measure);
     if (headerBox.current) ro.observe(headerBox.current);
 
     let last = window.scrollY;
-    let state = false;
+    let state = isHome;
     const onScroll = () => {
       const y = window.scrollY;
-      const h = headerBox.current?.offsetHeight ?? 0;
+      const h = headerBox.current?.offsetHeight ?? 80;
       const delta = y - last;
-      if (y <= h * 0.6) {
-        if (state) {
+
+      if (isHome) {
+        if (y < 420) {
+          setScrolledPastHero(false);
+          setCompact(true);
+          state = true;
+        } else {
+          setScrolledPastHero(true);
+          if (delta < -2 && state) {
+            state = false;
+            setCompact(false);
+          } else if (delta > 6 && !state && y > 600) {
+            state = true;
+            setCompact(true);
+          }
+        }
+      } else {
+        if (y <= h * 0.6) {
+          if (state) {
+            state = false;
+            setCompact(false);
+          }
+        } else if (delta > 6 && !state && y > h + 40) {
+          state = true;
+          setCompact(true);
+        } else if (delta < -2 && state) {
           state = false;
           setCompact(false);
         }
-      } else if (delta > 6 && !state && y > h + 40) {
-        state = true;
-        setCompact(true);
-      } else if (delta < -2 && state) {
-        state = false;
-        setCompact(false);
       }
       last = y;
     };
@@ -57,22 +82,25 @@ export default function SiteChrome({ categories }: { categories: Category[] }) {
       window.removeEventListener("scroll", onScroll);
       ro.disconnect();
     };
-  }, []);
+  }, [isHome]);
+
+  const isHiddenOnHome = isHome && !scrolledPastHero;
 
   return (
     <div
       ref={wrap}
-      className="sticky z-[1001]"
+      className={`sticky z-[1001] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        isHiddenOnHome ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
       style={{
-        top: compact ? -headerH : 0,
-        // glides away on the way down and glides back on the way up
-        transition: "top 600ms cubic-bezier(0.22, 1, 0.36, 1)",
+        top: isHiddenOnHome ? -headerH - 20 : compact ? -headerH : 0,
       }}
     >
       <div ref={headerBox}>
         <SiteHeader />
       </div>
-      <CategoryNav categories={categories} compact={compact} />
+      {/* Hidden for now as requested: CategoryNav under main navbar */}
+      {/* <CategoryNav categories={categories} compact={compact} /> */}
     </div>
   );
 }

@@ -37,9 +37,6 @@ export default function RelatedProductsCarousel({
     <section aria-label={title}>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-accent-text text-[10px] font-black uppercase tracking-[0.3em] mb-1">
-            Discover More
-          </p>
           <h2 className="text-foreground text-2xl font-black uppercase tracking-tighter font-outfit">
             {title}
           </h2>

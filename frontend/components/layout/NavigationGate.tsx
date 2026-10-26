@@ -3,7 +3,6 @@
 import { GenericSkeleton, HomeSkeleton, ListingSkeleton, ProductPageSkeleton } from "@/components/skeletons/PageSkeletons";
 import { scrollTopNow } from "@/components/motion/scroll-top";
 import { AccountContentSkeleton, AccountPageSkeleton, isAccountPath } from "@/components/skeletons/AccountSkeletons";
-import CompareSkeleton from "@/components/skeletons/CompareSkeleton";
 import { CartBodySkeleton, CheckoutBodySkeleton, CheckoutOverlaySkeleton } from "@/components/skeletons/CheckoutSkeletons";
 import { tokens } from "@/lib/api/client";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -20,7 +19,6 @@ const isCheckoutPath = (p: string) => p === "/cart" || p === "/checkout";
 function skeletonFor(href: string, fromAccount: boolean, fromCheckout: boolean) {
   const path = href.split(/[?#]/)[0].replace(/\/+$/, "") || "/";
   if (path === "/") return <HomeSkeleton />;
-  if (path === "/compare") return <CompareSkeleton />;
   // the cart and checkout have their own focused header, so their skeleton is a full screen of its own
   if (isCheckoutPath(path)) {
     if (fromCheckout) return path === "/cart" ? <CartBodySkeleton /> : <CheckoutBodySkeleton />;
