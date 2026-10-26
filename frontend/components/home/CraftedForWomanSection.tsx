@@ -104,7 +104,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
 
   return (
     <section className="w-full py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-transparent">
-      <div className="w-full max-w-[1400px] mx-auto rounded-[32px] sm:rounded-[40px] bg-[#F7F7F8] p-6 sm:p-10 lg:p-12 border border-neutral-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.03)]">
+      <div className="w-full max-w-[1400px] mx-auto rounded-[4px] bg-[#F7F7F8] p-6 sm:p-10 lg:p-12 border border-neutral-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.03)]">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10 pb-6 border-b border-neutral-200/60">
           <div>
@@ -138,7 +138,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
               >
                 {/* 1. IMAGE CONTAINER (Clean rounded card, NO overlays inside, fills tightly) */}
                 <div
-                  className={`relative w-full flex-1 rounded-[24px] sm:rounded-[28px] overflow-hidden bg-gradient-to-b ${
+                  className={`relative w-full flex-1 rounded-[4px] overflow-hidden bg-gradient-to-b ${
                     card.bgGradient || "from-[#FDF2F4] to-[#F1CAD4]"
                   } transition-all duration-500 ${
                     isHovered
@@ -173,8 +173,8 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
                         : "opacity-100 translate-y-0 scale-100 pointer-events-auto"
                     }`}
                   >
-                    <div className="flex items-center gap-2 px-3.5 py-2 rounded-full bg-white border border-neutral-200/80 shadow-xs text-neutral-800 w-fit max-w-full hover:bg-neutral-50 transition-colors">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#A37055] shrink-0" />
+                    <div className="flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-white border border-neutral-200/80 shadow-xs text-neutral-800 w-fit max-w-full hover:bg-neutral-50 transition-colors">
+                      <div className="w-1.5 h-1.5 rounded-[1px] bg-[#A37055] shrink-0" />
                       <span className="font-poppins text-xs font-medium text-neutral-800 truncate">
                         {card.name}
                       </span>
@@ -189,7 +189,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
                         : "opacity-0 pointer-events-none translate-y-2 scale-95"
                     }`}
                   >
-                    <div className="w-full flex items-center justify-between gap-2 p-1.5 pl-3.5 sm:pl-4 rounded-full bg-white text-neutral-900 shadow-sm border border-neutral-200/90">
+                    <div className="w-full flex items-center justify-between gap-2 p-1.5 pl-3.5 sm:pl-4 rounded-[4px] bg-white text-neutral-900 shadow-sm border border-neutral-200/90">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0 pr-1">
                         <span className="font-poppins text-xs sm:text-[13px] font-semibold text-neutral-900 truncate">
                           {card.name}
@@ -205,7 +205,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
                         disabled={isAdding}
                         title="Add to Cart"
                         aria-label={`Add ${card.name} to cart`}
-                        className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 active:scale-95 text-neutral-900 flex items-center justify-center transition-all border border-neutral-200/80 shadow-xs cursor-pointer disabled:opacity-75 shrink-0"
+                        className="w-8 h-8 rounded-[4px] bg-neutral-100 hover:bg-neutral-200 active:scale-95 text-neutral-900 flex items-center justify-center transition-all border border-neutral-200/80 shadow-xs cursor-pointer disabled:opacity-75 shrink-0"
                       >
                         {isAdding ? (
                           <Loader2 className="w-3.5 h-3.5 animate-spin" />
