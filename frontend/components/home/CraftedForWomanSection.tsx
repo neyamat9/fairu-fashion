@@ -94,10 +94,11 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
   };
 
   const getProductHref = (slug: string) => {
-    if (!slug) return "/category/three-piece";
+    if (!slug || slug === "three-piece") return "/category/three-piece-collection";
     if (slug.startsWith("/")) return slug;
     if (slug.includes("piece") || slug.includes("category")) {
-      return `/category/${slug.replace(/^category\//, "")}`;
+      const clean = slug.replace(/^category\//, "");
+      return `/category/${clean === "three-piece" ? "three-piece-collection" : clean}`;
     }
     return `/products/${slug}`;
   };

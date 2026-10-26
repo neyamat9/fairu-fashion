@@ -296,9 +296,11 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
               className="relative p-1 hover:text-[#9E596B] hover:scale-105 transition-all cursor-pointer"
             >
               <ShoppingBag className="w-5 h-5 stroke-[1.8]" />
-              <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-[#9E596B] text-white text-[10px] font-bold flex items-center justify-center leading-none shadow-sm">
-                {cartCount}
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-[#9E596B] text-white text-[10px] font-bold flex items-center justify-center leading-none shadow-sm">
+                  {cartCount}
+                </span>
+              )}
             </button>
 
             {/* Mobile Menu Hamburger */}

@@ -1,11 +1,11 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import ProductCard from "@/components/product/ProductCard";
 import type { Product } from "@/lib/types";
-import { ArrowRight } from "lucide-react";
 import RevealGroup from "@/components/motion/RevealGroup";
+import SectionHeader from "./SectionHeader";
+import SectionMore from "./SectionMore";
 
 interface NewArrivalsSectionProps {
   products: Product[];
@@ -18,41 +18,40 @@ export default function NewArrivalsSection({ products }: NewArrivalsSectionProps
 
   return (
     <section
-      className="w-full py-14 sm:py-18 px-4 sm:px-6 lg:px-8 bg-background relative overflow-hidden"
+      className="overflow-x-clip bg-background pb-16 pt-[60px] sm:pt-[58px] md:pb-20 md:pt-[71px]"
       aria-labelledby="new-arrivals-heading"
     >
-      <RevealGroup className="max-w-[1400px] mx-auto">
-        {/* Luxury Architectural Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-6 border-b border-neutral-200/80">
-          <div>
-            <h2
-              id="new-arrivals-heading"
-              className="font-outfit font-light text-2xl sm:text-3xl lg:text-4xl tracking-tight text-neutral-900 uppercase"
-            >
-              NEW SEASON <span className="font-semibold text-neutral-950">ARRIVALS</span>
-            </h2>
-            <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] font-medium text-neutral-400 mt-2">
-              Fresh silhouettes • Handcrafted luxury • Seasonal palettes
-            </p>
-          </div>
+      <RevealGroup className="relative mx-auto max-w-[1440px] px-4 md:px-8">
+        <span
+          data-drift="1.4"
+          className="pointer-events-none absolute right-0 top-2 hidden h-5 w-5 bg-brand-orange/60 md:block"
+          aria-hidden="true"
+        />
+        <span
+          data-drift="0.7"
+          className="pointer-events-none absolute right-16 top-20 hidden h-3 w-3 bg-primary/30 md:block"
+          aria-hidden="true"
+        />
 
-          <Link
-            href="/browse?sort=newest"
-            className="group inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-900 hover:text-[#9E596B] transition-colors font-poppins self-start sm:self-end"
-          >
-            <span>Explore All New In</span>
-            <span className="w-8 h-8 rounded-full bg-neutral-100 group-hover:bg-[#9E596B] group-hover:text-white flex items-center justify-center transition-colors">
-              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+        <SectionHeader
+          title={
+            <span id="new-arrivals-heading">
+              New season <span className="text-brand-orange">arrivals</span>
             </span>
-          </Link>
-        </div>
+          }
+          description="Our freshest silhouettes this season — tested, trusted and priced better."
+          href="/products"
+          hrefLabel="View all products"
+        />
 
         {/* Product Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 gap-4 [perspective:1100px] min-[480px]:grid-cols-2 min-[480px]:gap-3 md:gap-5 lg:grid-cols-4">
           {displayProducts.map((product) => (
             <ProductCard key={product.id} product={product} entrance={false} />
           ))}
         </div>
+
+        <SectionMore href="/products" label="View all products" />
       </RevealGroup>
     </section>
   );
