@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Star, CheckCircle, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import React, { useState, useEffect, useRef } from "react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import RevealGroup from "@/components/motion/RevealGroup";
 
 interface Testimonial {
   id: string;
@@ -10,8 +10,8 @@ interface Testimonial {
   location: string;
   avatarText: string;
   rating: number;
-  productBought: string;
-  text: string;
+  headline: string;
+  quote: string;
   date: string;
 }
 
@@ -22,8 +22,9 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Gulshan, Dhaka",
     avatarText: "TR",
     rating: 5,
-    productBought: "Zamzam Royal Three Piece",
-    text: "The embroidery and fabric weight were beyond breathtaking. The zari thread work has an authentic royal finish that felt so comfortable all day.",
+    headline: "Breathtaking Zari Embroidery & Regal Draping",
+    quote:
+      "The embroidery and fabric weight were beyond breathtaking. The zari thread work has an authentic royal finish that felt so comfortable all day at my cousin's Holud. Everyone kept asking where I bought it!",
     date: "2 days ago",
   },
   {
@@ -32,9 +33,10 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Nasirabad, Chittagong",
     avatarText: "NJ",
     rating: 5,
-    productBought: "Bin Hamid Luxury Lawn",
-    text: "Fairu Fashion has become my primary boutique for ethnic wear. The stitching precision is impeccable and delivery to Chittagong was super prompt.",
-    date: "1 week ago",
+    headline: "Unmatched Fabric Drape & Prompt Delivery",
+    quote:
+      "Fairu Fashion has become my primary boutique for Pakistani luxury lawn. The stitching precision is impeccable and delivery to Chittagong was super prompt with lovely boutique packaging.",
+    date: "4 days ago",
   },
   {
     id: "3",
@@ -42,9 +44,10 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Uttara, Dhaka",
     avatarText: "FA",
     rating: 5,
-    productBought: "Gul Ahmed Mint Silk",
-    text: "Pure luxury silk that feels featherlight yet opulent. The exact color matched the photos 100%. Hands down the best online boutique experience in BD.",
-    date: "2 weeks ago",
+    headline: "Pure Opulent Silk Matching Photos 100%",
+    quote:
+      "Pure luxury silk that feels featherlight yet opulent. The exact emerald-mint color matched the photos 100%. Hands down the most trustworthy online boutique experience in Bangladesh.",
+    date: "1 week ago",
   },
   {
     id: "4",
@@ -52,9 +55,10 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Zindabazar, Sylhet",
     avatarText: "SH",
     rating: 5,
-    productBought: "Summer Floral Festive",
-    text: "Outstanding customer service and genuine luxury fabric. You can immediately notice the hand-crafted touch in the neckline and dupatta tassels.",
-    date: "3 weeks ago",
+    headline: "Exceptional Neckline & Dupatta Details",
+    quote:
+      "Outstanding customer service and genuine luxury fabric. You can immediately notice the hand-crafted touch in the neckline and dupatta tassels. Will definitely order again!",
+    date: "2 weeks ago",
   },
   {
     id: "5",
@@ -62,156 +66,281 @@ const TESTIMONIALS: Testimonial[] = [
     location: "Dhanmondi, Dhaka",
     avatarText: "MK",
     rating: 5,
-    productBought: "Fairu Rose Organza Edit",
-    text: "Wore this piece to a wedding reception and received compliments all evening! The drape of the organza dupatta is pure elegance.",
+    headline: "Turned Heads at the Wedding Reception",
+    quote:
+      "Wore this piece to a high-profile wedding reception and received compliments all evening! The drape of the organza dupatta and the subtle shimmer is pure elegance.",
+    date: "3 weeks ago",
+  },
+  {
+    id: "6",
+    name: "Ayesha Siddiqua",
+    location: "Banani, Dhaka",
+    avatarText: "AS",
+    rating: 5,
+    headline: "Flawless Fit & Authentic Pakistani Fabric",
+    quote:
+      "I was hesitant about ordering unstitched suits online, but the fabric length was generous, the motifs are flawless, and customer support was so helpful with tailoring guidance.",
     date: "1 month ago",
   },
 ];
 
+// Tripled list for a seamless, continuous infinite loop without any edge jumps
+const INFINITE_ITEMS = [...TESTIMONIALS, ...TESTIMONIALS, ...TESTIMONIALS];
+const BASE_COUNT = TESTIMONIALS.length;
+const GAP_PX = 20;
+
 export default function TestimonialsSection() {
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(BASE_COUNT);
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(3);
 
-  const nextTestimonial = () => {
-    setActiveIdx((prev) => (prev + 1) % TESTIMONIALS.length);
-  };
+  // Real-time drag state for instant mouse/touch sliding
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const isPointerDown = useRef(false);
+  const startX = useRef(0);
+  const currentDragDelta = useRef(0);
 
-  const prevTestimonial = () => {
-    setActiveIdx((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
-  };
-
+  // Responsive visible count tracking (3 on desktop, 2 on tablet, 1 on mobile)
   useEffect(() => {
-    if (isPaused) return;
-    const timer = setInterval(() => {
-      nextTestimonial();
-    }, 5500);
-    return () => clearInterval(timer);
-  }, [isPaused]);
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setVisibleCount(1);
+      } else if (window.innerWidth < 1024) {
+        setVisibleCount(2);
+      } else {
+        setVisibleCount(3);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const current = TESTIMONIALS[activeIdx];
+  // Seamless infinite wrap-around on boundary transition completion
+  const handleTransitionEnd = () => {
+    if (currentIndex >= 2 * BASE_COUNT) {
+      setIsTransitioning(false);
+      setCurrentIndex((prev) => prev - BASE_COUNT);
+    } else if (currentIndex < BASE_COUNT) {
+      setIsTransitioning(false);
+      setCurrentIndex((prev) => prev + BASE_COUNT);
+    }
+  };
+
+  // Re-enable smooth transition on the next animation frame after silent index reset
+  useEffect(() => {
+    if (!isTransitioning) {
+      const raf = requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsTransitioning(true);
+        });
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+  }, [isTransitioning]);
+
+  const handleNext = () => {
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    setIsTransitioning(true);
+    setCurrentIndex((prev) => prev - 1);
+  };
+
+  // Auto-advance every 5 seconds (paused when user hovers or drags)
+  useEffect(() => {
+    if (isPaused || isDragging) return;
+    const timer = setInterval(() => {
+      handleNext();
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [isPaused, isDragging]);
+
+  // Real-time mouse and touch dragging handlers (slides INSTANTLY while pressing mouse)
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    isPointerDown.current = true;
+    startX.current = e.clientX;
+    currentDragDelta.current = 0;
+    setIsDragging(true);
+    setIsTransitioning(false); // Disable transition for 1:1 real-time cursor tracking
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {}
+  };
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!isPointerDown.current) return;
+    const delta = e.clientX - startX.current;
+    currentDragDelta.current = delta;
+    setDragOffset(delta); // Updates the slider position INSTANTLY with zero lag
+  };
+
+  const onPointerUp = (e: React.PointerEvent) => {
+    if (!isPointerDown.current) return;
+    isPointerDown.current = false;
+    try {
+      (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    } catch {}
+
+    const threshold = 40;
+    setIsTransitioning(true); // Re-enable smooth transition for the snap
+    setDragOffset(0);
+
+    if (currentDragDelta.current < -threshold) {
+      handleNext();
+    } else if (currentDragDelta.current > threshold) {
+      handlePrev();
+    }
+
+    currentDragDelta.current = 0;
+    setTimeout(() => setIsDragging(false), 50);
+  };
+
+  // Optional mouse wheel horizontal swipe support
+  const onWheel = (e: React.WheelEvent) => {
+    if (Math.abs(e.deltaX) > 30) {
+      if (e.deltaX > 0) handleNext();
+      else handlePrev();
+    }
+  };
 
   return (
     <section
-      className="w-full py-16 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background via-[#faf3f6] to-background overflow-hidden select-none"
+      className="overflow-x-clip bg-secondary/35 pb-14 pt-[54px] sm:pt-[64px] md:pb-18 border-t border-border/40 select-none"
       aria-labelledby="testimonials-heading"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
+      onWheel={onWheel}
     >
-      <div className="max-w-[1400px] mx-auto">
-        {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12 pb-5 border-b border-rose-100/60">
-          <div>
+      <RevealGroup className="relative mx-auto max-w-[1440px] px-4 md:px-8">
+        {/* Decorative ambient drift markers */}
+        <span
+          data-drift="1.4"
+          className="pointer-events-none absolute right-0 top-2 hidden h-5 w-5 bg-brand-orange/60 md:block"
+          aria-hidden="true"
+        />
+        <span
+          data-drift="0.7"
+          className="pointer-events-none absolute right-16 top-20 hidden h-3 w-3 bg-primary/30 md:block"
+          aria-hidden="true"
+        />
+
+        {/* Section Header with Left Titles & Right Slide Arrows */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-7 sm:mb-8">
+          <div className="max-w-2xl">
             <h2
               id="testimonials-heading"
-              className="font-outfit font-light text-2xl sm:text-3xl lg:text-4xl tracking-tight text-neutral-900"
+              className="font-outfit text-[1.65rem] font-extrabold leading-[1.1] tracking-tight text-primary dark:text-foreground sm:text-3xl md:text-4xl"
             >
-              What Our Patrons <span className="font-semibold text-neutral-950">Say</span>
+              Loved by <span className="text-brand-orange">thousands</span> of women
             </h2>
+            <span className="mt-3.5 block h-1 w-16 bg-brand-orange" aria-hidden="true" />
+            <p className="mt-3 text-sm sm:text-base leading-relaxed text-muted-foreground">
+              Authentic stories from our patrons across Bangladesh celebrating royal fabrics, flawless stitching, and timeless silhouettes.
+            </p>
           </div>
 
-          {/* Aggregate Rating Pill */}
-          <div className="flex items-center gap-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full border border-neutral-200/80 shadow-sm w-fit">
-            <div className="flex text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-3.5 h-3.5 fill-current" />
-              ))}
-            </div>
-            <span className="font-poppins text-xs font-bold text-neutral-900">4.9 / 5.0</span>
-            <span className="text-neutral-400 text-xs">•</span>
-            <span className="text-neutral-500 font-poppins text-xs">2,400+ Verified Buyers</span>
-          </div>
-        </div>
-
-        {/* Testimonial Showcase Card with Framer Motion Animation */}
-        <div className="relative rounded-[32px] bg-white p-6 sm:p-10 lg:p-14 border border-rose-100/70 shadow-[0_20px_50px_rgba(200,60,100,0.06)] min-h-[340px] flex flex-col justify-between">
-          <Quote className="absolute right-8 top-8 w-16 sm:w-24 h-16 sm:h-24 text-rose-500/10 pointer-events-none" />
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.38, ease: "easeOut" }}
-              className="relative z-10"
+          {/* Clean Navigation Chevron Buttons on Top Right */}
+          <div className="flex items-center gap-2 self-start sm:self-end shrink-0">
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Previous slide"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-[4px] bg-card border border-border/80 hover:border-brand-orange text-foreground hover:text-primary flex items-center justify-center transition-colors cursor-pointer shadow-xs active:scale-95"
             >
-              {/* Rating & Purchased item tag */}
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <div className="flex text-amber-400">
-                  {[...Array(current.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-current" />
-                  ))}
-                </div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold font-poppins border border-emerald-200/60">
-                  <CheckCircle className="w-3.5 h-3.5" />
-                  Verified Buyer
-                </span>
-                <span className="text-xs font-medium text-neutral-500 font-poppins bg-neutral-100/80 px-3 py-1 rounded-full">
-                  Purchased: {current.productBought}
-                </span>
-              </div>
-
-              {/* Quote text */}
-              <blockquote className="font-outfit text-xl sm:text-2xl lg:text-3xl font-normal text-neutral-800 leading-relaxed max-w-4xl mb-8">
-                “{current.text}”
-              </blockquote>
-
-              {/* Author Info */}
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-rose-500 to-amber-400 text-white font-poppins font-bold text-sm flex items-center justify-center shadow-md">
-                  {current.avatarText}
-                </div>
-                <div>
-                  <h3 className="font-poppins font-bold text-neutral-900 text-sm sm:text-base">
-                    {current.name}
-                  </h3>
-                  <p className="text-xs text-neutral-400 font-poppins">
-                    {current.location} • {current.date}
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Bottom Carousel Controls */}
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-neutral-100 z-10">
-            {/* Indicator dots */}
-            <div className="flex items-center gap-2">
-              {TESTIMONIALS.map((t, i) => (
-                <button
-                  key={t.id}
-                  type="button"
-                  onClick={() => setActiveIdx(i)}
-                  aria-label={`Go to testimonial ${i + 1}`}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    activeIdx === i ? "w-8 bg-rose-500" : "w-2 bg-neutral-200 hover:bg-neutral-300"
-                  }`}
-                />
-              ))}
-            </div>
-
-            {/* Navigation Chevron buttons */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={prevTestimonial}
-                aria-label="Previous testimonial"
-                className="w-10 h-10 rounded-full bg-neutral-100 hover:bg-neutral-900 text-neutral-700 hover:text-white transition-colors duration-200 flex items-center justify-center shadow-sm"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                onClick={nextTestimonial}
-                aria-label="Next testimonial"
-                className="w-10 h-10 rounded-full bg-neutral-100 hover:bg-neutral-900 text-neutral-700 hover:text-white transition-colors duration-200 flex items-center justify-center shadow-sm"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Next slide"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-[4px] bg-card border border-border/80 hover:border-brand-orange text-foreground hover:text-primary flex items-center justify-center transition-colors cursor-pointer shadow-xs active:scale-95"
+            >
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
           </div>
         </div>
-      </div>
+
+        {/* 
+          CONTINUOUS INFINITE 3-CARD CAROUSEL (NO PHOTOS, SMALL COMPACT MODERN CARDS)
+          Follows mouse cursor instantly during drag, always showing 3 full cards on desktop.
+        */}
+        <div
+          className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+        >
+          <div
+            onTransitionEnd={handleTransitionEnd}
+            className="flex gap-5 will-change-transform"
+            style={{
+              transform: `translateX(calc(-1 * ${currentIndex} * (100% + ${GAP_PX}px) / ${visibleCount} + ${dragOffset}px))`,
+              transition: isTransitioning
+                ? "transform 450ms cubic-bezier(0.25, 1, 0.5, 1)"
+                : "none",
+            }}
+          >
+            {INFINITE_ITEMS.map((item, idx) => (
+              <div
+                key={`${item.id}-${idx}`}
+                className="w-full sm:w-[calc(50%-10px)] lg:w-[calc(33.333333%-14px)] shrink-0"
+              >
+                {/* Small, Sleek, Modern Testimonial Card */}
+                <div className="flex flex-col justify-between h-full rounded-[4px] bg-card border border-border/80 shadow-xs hover:shadow-md hover:border-brand-orange/60 transition-all duration-200 p-4 sm:p-5 min-h-[185px]">
+                  
+                  {/* Top Row: 5 Gold Stars & Relative Date */}
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2.5">
+                      <div className="flex items-center gap-0.5 text-[#f4a2b6]">
+                        {[...Array(item.rating)].map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 fill-current" />
+                        ))}
+                      </div>
+                      <span className="text-[11px] font-medium text-muted-foreground/80">
+                        {item.date}
+                      </span>
+                    </div>
+
+                    {/* Headline */}
+                    <h3 className="font-outfit font-bold text-sm sm:text-[15px] text-foreground mb-1.5 leading-snug line-clamp-1">
+                      &ldquo;{item.headline}&rdquo;
+                    </h3>
+
+                    {/* Body Quote */}
+                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3 font-normal">
+                      {item.quote}
+                    </p>
+                  </div>
+
+                  {/* Reviewer Details Footer (No photos, clean avatar initials + name + location) */}
+                  <div className="pt-3 mt-3 border-t border-border/50 flex items-center gap-2.5 min-w-0">
+                    <div className="w-6 h-6 rounded-[4px] bg-gradient-to-tr from-primary to-brand-orange text-white font-bold text-[10px] flex items-center justify-center shrink-0 shadow-xs">
+                      {item.avatarText}
+                    </div>
+                    <div className="min-w-0 flex items-center gap-1.5 truncate">
+                      <span className="font-bold text-xs text-foreground truncate">
+                        {item.name}
+                      </span>
+                      <span className="text-muted-foreground/60 text-[10px]">•</span>
+                      <span className="text-[11px] text-muted-foreground truncate">
+                        {item.location}
+                      </span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </RevealGroup>
     </section>
   );
 }
