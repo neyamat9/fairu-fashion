@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
 import RevealGroup from "@/components/motion/RevealGroup";
 
 interface Testimonial {
@@ -231,7 +232,13 @@ export default function TestimonialsSection() {
         />
 
         {/* Section Header with Left Titles & Right Slide Arrows */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-7 sm:mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 28 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-7 sm:mb-8"
+        >
           <div className="max-w-2xl">
             <h2
               id="testimonials-heading"
@@ -239,14 +246,27 @@ export default function TestimonialsSection() {
             >
               Loved by <span className="text-brand-orange">thousands</span> of women
             </h2>
-            <span className="mt-3.5 block h-1 w-16 bg-brand-orange" aria-hidden="true" />
+            <motion.span
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              className="mt-3.5 block h-1 w-16 bg-brand-orange origin-left"
+              aria-hidden="true"
+            />
             <p className="mt-3 text-sm sm:text-base leading-relaxed text-muted-foreground">
               Authentic stories from our patrons across Bangladesh celebrating royal fabrics, flawless stitching, and timeless silhouettes.
             </p>
           </div>
 
           {/* Clean Navigation Chevron Buttons on Top Right */}
-          <div className="flex items-center gap-2 self-start sm:self-end shrink-0">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, x: 12 }}
+            whileInView={{ opacity: 1, scale: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="flex items-center gap-2 self-start sm:self-end shrink-0"
+          >
             <button
               type="button"
               onClick={handlePrev}
@@ -263,14 +283,18 @@ export default function TestimonialsSection() {
             >
               <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* 
           CONTINUOUS INFINITE 3-CARD CAROUSEL (NO PHOTOS, SMALL COMPACT MODERN CARDS)
           Follows mouse cursor instantly during drag, always showing 3 full cards on desktop.
         */}
-        <div
+        <motion.div
+          initial={{ opacity: 0, y: 35, filter: "blur(6px)" }}
+          whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          viewport={{ once: true, margin: "-30px" }}
+          transition={{ duration: 0.85, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-full overflow-hidden cursor-grab active:cursor-grabbing touch-pan-y"
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
@@ -339,7 +363,7 @@ export default function TestimonialsSection() {
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </RevealGroup>
     </section>
   );
