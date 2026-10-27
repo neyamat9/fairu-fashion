@@ -24,10 +24,10 @@ export default function CategoryGrid({ categories }: CategoryGridProps) {
           once
           title={
             <span id="categories-heading">
-              Curated <span className="text-brand-orange">Collections</span> for Her
+              Shop by <span className="text-brand-orange">Category</span>
             </span>
           }
-          description="From festive sarees and regal lehengas to chic western dresses and casual wear — find your signature style."
+          description="Explore our collections — from three piece suits and two piece sets to ready-to-wear festive fashion."
           action={
             <BrowseTrigger
               kind="categories"

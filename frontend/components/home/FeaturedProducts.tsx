@@ -17,10 +17,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
         <SectionHeader
           title={
             <span id="featured-heading">
-              Handpicked <span className="text-brand-orange">smart choices</span>
+              Featured <span className="text-brand-orange">Collection</span>
             </span>
           }
-          description="Our team's favourite accessories this month — tested, trusted and priced better."
+          description="Handpicked customer favorites and specially selected designer outfits for this season."
           href="/products"
           hrefLabel="View all products"
         />

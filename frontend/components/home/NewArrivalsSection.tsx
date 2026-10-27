@@ -36,10 +36,10 @@ export default function NewArrivalsSection({ products }: NewArrivalsSectionProps
         <SectionHeader
           title={
             <span id="new-arrivals-heading">
-              New season <span className="text-brand-orange">arrivals</span>
+              New <span className="text-brand-orange">Arrivals</span>
             </span>
           }
-          description="Our freshest silhouettes this season — tested, trusted and priced better."
+          description="Fresh designs and seasonal collections just arrived in our boutique."
           href="/products"
           hrefLabel="View all products"
         />

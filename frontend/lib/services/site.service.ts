@@ -75,14 +75,14 @@ const FALLBACK: SiteSettings = {
       '/hero/hero-slide-3.webp',
     ],
     heroBadge: 'TIMELESS ELEGANCE',
-    heroTitle: 'Grace in Every',
-    heroHighlight: 'Three Piece',
-    heroDescription: "Discover our exclusive collection of women's three piece outfits — crafted for your everyday grace and special moments.",
+    heroTitle: 'Exclusive',
+    heroHighlight: "Women's Fashion",
+    heroDescription: "Discover our exclusive collection of women's three piece, two piece, and ready-to-wear outfits crafted for everyday grace and celebrations.",
     heroButtonText: 'Shop Now',
-    heroButtonLink: '/category/three-piece',
+    heroButtonLink: '/products',
     heroIntervalSeconds: 5,
     craftedSection: {
-      title: 'CRAFTED FOR THE ELEGANT WOMAN',
+      title: 'Crafted for the Elegant Woman',
       subtitle:
         'Essential silhouettes, rich hand-woven textures, and effortless luxury for every occasion.',
       items: [

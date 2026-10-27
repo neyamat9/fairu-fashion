@@ -68,10 +68,10 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
 
   const items =
     settings?.items && settings.items.length > 0 ? settings.items : DEFAULT_ITEMS;
-  const sectionTitle = settings?.title || "CRAFTED FOR THE ELEGANT WOMAN";
+  const sectionTitle = settings?.title || "Crafted for the Elegant Woman";
   const sectionSubtitle =
     settings?.subtitle ||
-    "ESSENTIAL SILHOUETTES, RICH HAND-WOVEN TEXTURES, AND EFFORTLESS LUXURY FOR EVERY OCCASION";
+    "Essential silhouettes, rich hand-woven textures, and effortless luxury for every occasion.";
 
   const handleAddToCart = async (e: React.MouseEvent, item: CraftedProductItem) => {
     e.preventDefault();
@@ -109,12 +109,12 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10 pb-6 border-b border-neutral-200/60">
           <div>
-            <h2 className="font-outfit font-light text-2xl sm:text-3xl lg:text-4xl tracking-tight text-neutral-900 uppercase">
+            <h2 className="font-outfit font-normal text-2xl sm:text-3xl lg:text-4xl tracking-tight text-neutral-900">
               {sectionTitle}
             </h2>
           </div>
 
-          <p className="text-[11px] sm:text-xs uppercase tracking-[0.16em] font-medium text-neutral-500 max-w-[380px] md:text-right leading-relaxed">
+          <p className="text-xs sm:text-[13px] font-normal text-neutral-500 max-w-[420px] md:text-right leading-relaxed">
             {sectionSubtitle}
           </p>
         </div>

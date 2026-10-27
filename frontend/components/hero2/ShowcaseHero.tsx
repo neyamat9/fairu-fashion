@@ -21,11 +21,11 @@ export const ShowcaseHero: React.FC<ShowcaseHeroProps> = ({ settings }) => {
         "/hero/hero-slide-3.webp",
       ];
   
-  const titleMain = site?.heroTitle || "Grace in Every";
-  const titleHighlight = site?.heroHighlight || "Three Piece";
-  const description = site?.heroDescription || "Discover our exclusive collection of women's three piece outfits — crafted for your everyday grace and special moments.";
+  const titleMain = site?.heroTitle || "Exclusive";
+  const titleHighlight = site?.heroHighlight || "Women's Fashion";
+  const description = site?.heroDescription || "Discover our exclusive collection of women's three piece, two piece, and ready-to-wear outfits crafted for everyday grace and celebrations.";
   const buttonText = site?.heroButtonText || "Shop Now";
-  const buttonLink = site?.heroButtonLink || "/category/three-piece";
+  const buttonLink = site?.heroButtonLink || "/products";
   const intervalSeconds = site?.heroIntervalSeconds && site.heroIntervalSeconds > 0
     ? site.heroIntervalSeconds
     : 5;
