@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ShoppingBag, Loader2 } from "lucide-react";
 import { useQuickAdd } from "@/lib/hooks/use-quick-add";
 import type { CraftedSectionSettings, CraftedProductItem } from "@/lib/services/site.service";
@@ -105,9 +106,21 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
 
   return (
     <section className="w-full py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-transparent">
-      <div className="w-full max-w-[1400px] mx-auto rounded-[4px] bg-[#F7F7F8] p-6 sm:p-10 lg:p-12 border border-neutral-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.03)]">
+      <motion.div
+        initial={{ opacity: 0, y: 36 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-[1400px] mx-auto rounded-[4px] bg-[#F7F7F8] p-6 sm:p-10 lg:p-12 border border-neutral-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.03)]"
+      >
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10 pb-6 border-b border-neutral-200/60">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10 pb-6 border-b border-neutral-200/60"
+        >
           <div>
             <h2 className="font-outfit font-normal text-2xl sm:text-3xl lg:text-4xl tracking-tight text-neutral-900">
               {sectionTitle}
@@ -117,7 +130,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
           <p className="text-xs sm:text-[13px] font-normal text-neutral-500 max-w-[420px] md:text-right leading-relaxed">
             {sectionSubtitle}
           </p>
-        </div>
+        </motion.div>
 
         {/* 
           HORIZONTAL ACCORDION CARDS CONTAINER
@@ -130,8 +143,16 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
             const isAdding = addingId === card.productId;
 
             return (
-              <div
+              <motion.div
                 key={`${card.productId}-${idx}`}
+                initial={{ opacity: 0, y: 35 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-20px" }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.18 + idx * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 onMouseEnter={() => setHoveredIdx(idx)}
                 className={`group flex flex-col justify-between min-h-[460px] lg:min-h-0 transition-[flex] duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-[flex] cursor-pointer ${
                   isHovered ? "lg:flex-[2.6]" : "lg:flex-1"
@@ -217,11 +238,11 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

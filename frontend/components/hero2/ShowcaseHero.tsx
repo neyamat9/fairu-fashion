@@ -51,11 +51,11 @@ export const ShowcaseHero: React.FC<ShowcaseHeroProps> = ({ settings }) => {
         <AnimatePresence mode="sync">
           <motion.div
             key={currentIndex}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{
-              duration: 1.2,
+              duration: 1.3,
               ease: [0.25, 0.1, 0.25, 1],
             }}
             className="absolute inset-0 w-full h-full"
@@ -83,31 +83,55 @@ export const ShowcaseHero: React.FC<ShowcaseHeroProps> = ({ settings }) => {
           <div className="lg:col-span-7 xl:col-span-6 z-20 flex flex-col justify-center pt-2 sm:pt-4 lg:pt-0 max-w-[620px]">
             {/* Display Headline written seamlessly on the textured wall */}
             <h1 className="font-serif text-[42px] sm:text-[56px] lg:text-[66px] xl:text-[74px] leading-[1.08] text-[#221B19] tracking-[-0.02em] mb-5 sm:mb-6">
-              {/* Line 1: Grace in Every */}
-              <span className="block font-medium drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]">
-                {titleMain}
+              {/* Line 1: Exclusive */}
+              <span className="block overflow-hidden pb-1">
+                <motion.span
+                  initial={{ y: "115%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                  className="block font-medium drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
+                >
+                  {titleMain}
+                </motion.span>
               </span>
-              {/* Line 2: Three Piece in gorgeous italic cursive serif */}
-              <span className="block font-normal italic font-serif text-[#A25E70] drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]">
-                {titleHighlight}
+              {/* Line 2: Women's Fashion in gorgeous italic cursive serif */}
+              <span className="block overflow-hidden pb-1">
+                <motion.span
+                  initial={{ y: "115%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.95, delay: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                  className="block font-normal italic font-serif text-[#A25E70] drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]"
+                >
+                  {titleHighlight}
+                </motion.span>
               </span>
             </h1>
 
             {/* Description Paragraph */}
-            <p className="text-[14px] sm:text-[15px] lg:text-[16px] leading-[1.7] text-[#554C47] max-w-[460px] font-sans mb-8 sm:mb-9 font-normal">
+            <motion.p
+              initial={{ opacity: 0, y: 22 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.85, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="text-[14px] sm:text-[15px] lg:text-[16px] leading-[1.7] text-[#554C47] max-w-[460px] font-sans mb-8 sm:mb-9 font-normal"
+            >
               {description}
-            </p>
+            </motion.p>
 
             {/* CTA Button */}
-            <div className="flex items-center gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 22, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              className="flex items-center gap-4"
+            >
               <Link
                 href={buttonLink}
-                className="group inline-flex items-center justify-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 rounded-md bg-[#9E596B] hover:bg-[#8B485A] text-white text-[14px] font-medium tracking-wide shadow-[0_4px_16px_rgba(158,89,107,0.25)] hover:shadow-[0_6px_20px_rgba(158,89,107,0.35)] transition-all duration-300 hover:scale-[1.02]"
+                className="group inline-flex items-center justify-center gap-3 px-7 sm:px-8 py-3.5 sm:py-4 rounded-[4px] bg-[#9E596B] hover:bg-[#8B485A] text-white text-[14px] font-medium tracking-wide shadow-[0_4px_16px_rgba(158,89,107,0.25)] hover:shadow-[0_6px_20px_rgba(158,89,107,0.35)] transition-all duration-300 hover:scale-[1.02]"
               >
                 <span>{buttonText}</span>
                 <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
-            </div>
+            </motion.div>
           </div>
 
           {/* RIGHT COLUMN: Natural space for model in background */}
