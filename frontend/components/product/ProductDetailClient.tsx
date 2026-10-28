@@ -85,15 +85,15 @@ export default function ProductDetailClient({ product: initial, relatedProducts,
             {/* ── Details (stacked sections) beside the related-products list ── */}
             <div className="grid items-start gap-5 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[340px_minmax(0,1fr)]">
               <aside
-                className="no-scrollbar hidden lg:sticky lg:block lg:max-h-[calc(100vh-var(--sticky-top,8rem)-1rem)] lg:overflow-y-auto lg:transition-[top] lg:duration-[600ms] lg:ease-[cubic-bezier(0.22,1,0.36,1)]"
-                style={{ top: "var(--sticky-top, 8rem)" }}
+                className="no-scrollbar hidden lg:sticky lg:block lg:max-h-[calc(100vh-var(--sticky-top,5.5rem)-1rem)] lg:overflow-y-auto lg:transition-[top] lg:duration-300 lg:ease-out"
+                style={{ top: "var(--sticky-top, 5.5rem)" }}
                 data-lenis-prevent
               >
                 <RelatedSideList products={relatedProducts} />
               </aside>
 
               <div className="flex min-w-0 flex-col gap-5">
-                <section data-reveal="up" className="rounded border border-border bg-card">
+                <section className="rounded border border-border bg-card">
                   <ProductTabs product={product} reviews={reviews} reviewStats={reviewStats} questions={questions} />
                 </section>
 

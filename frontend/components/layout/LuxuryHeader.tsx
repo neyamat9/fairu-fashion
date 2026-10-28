@@ -84,6 +84,30 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
   const lastScrollY = useRef(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Synchronize CSS sticky variables so page content and sidebars sit smoothly under the header
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const h = headerRef.current?.offsetHeight || 72;
+    if (visible) {
+      document.documentElement.style.setProperty("--navbar-height", `${h}px`);
+      document.documentElement.style.setProperty("--sticky-top", `${h + 16}px`);
+      document.documentElement.style.setProperty("--chrome-full", `${h + 16}px`);
+    } else {
+      document.documentElement.style.setProperty("--navbar-height", "0px");
+      document.documentElement.style.setProperty("--sticky-top", "16px");
+      document.documentElement.style.setProperty("--chrome-full", `${h + 16}px`);
+    }
+  }, [visible]);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const h = headerRef.current?.offsetHeight || 72;
+    document.documentElement.style.setProperty("--navbar-height", `${h}px`);
+    document.documentElement.style.setProperty("--sticky-top", `${h + 16}px`);
+    document.documentElement.style.setProperty("--chrome-full", `${h + 16}px`);
+  }, []);
 
   // Search logic & autocomplete
   const { input: searchQuery, setInput: setSearchQuery, query: debouncedQuery } = useDebouncedSearch(300);
@@ -268,6 +292,7 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
       {/* 1. FIXED LUXURY HEADER (Seamless on wall -> White on scroll) */}
       {/* ============================================================ */}
       <header
+        ref={headerRef}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-out select-none ${
           visible ? "translate-y-0" : "-translate-y-full pointer-events-none"
         } ${

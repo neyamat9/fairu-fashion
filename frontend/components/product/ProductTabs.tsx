@@ -621,7 +621,7 @@ export default function ProductTabs({ product, reviews, reviewStats, questions }
   function offset(goingUp = false) {
     // scrolling up brings the full header back, so reserve room for it
     const css = getComputedStyle(document.documentElement);
-    const sticky = parseFloat(css.getPropertyValue(goingUp ? "--chrome-full" : "--sticky-top")) || 128;
+    const sticky = parseFloat(css.getPropertyValue(goingUp ? "--chrome-full" : "--sticky-top")) || 88;
     const bar = document.getElementById("product-tabbar")?.offsetHeight ?? 56;
     return sticky - 16 + bar;
   }
@@ -649,8 +649,8 @@ export default function ProductTabs({ product, reviews, reviewStats, questions }
         role="tablist"
         aria-label="Jump to a section"
         ref={bar}
-        className="no-scrollbar sticky z-30 flex overflow-x-auto rounded-t border-b border-border bg-card px-1 transition-[top] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] max-sm:pr-8 max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-28px),transparent)] sm:px-4"
-        style={{ top: "calc(var(--sticky-top, 8rem) - 16px)" }}
+        className="no-scrollbar sticky z-30 flex overflow-x-auto rounded-t border-b border-border bg-card/98 backdrop-blur-md px-1 transition-[top] duration-300 ease-out max-sm:pr-8 max-sm:[mask-image:linear-gradient(to_right,#000_calc(100%-28px),transparent)] sm:px-4 shadow-xs"
+        style={{ top: "var(--navbar-height, 0px)" }}
       >
         {sections.map((t) => {
           const on = active === t.id;
