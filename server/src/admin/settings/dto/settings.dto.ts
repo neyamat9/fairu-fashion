@@ -27,6 +27,7 @@ export class SocialLinksDto {
   @ApiPropertyOptional() @IsOptional() @IsString() tiktok?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() twitter?: string;
   @ApiPropertyOptional() @IsOptional() @IsString() linkedin?: string;
+  @ApiPropertyOptional() @IsOptional() @IsString() whatsapp?: string;
 }
 
 export class CraftedProductItemDto {

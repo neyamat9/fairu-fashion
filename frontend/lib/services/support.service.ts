@@ -1,7 +1,26 @@
 import { api } from '../api/client';
 
 // contact form + newsletter + back-in-stock + returns + support tickets
-export const sendContactMessage = (b: { name: string; email: string; phone?: string; subject: string; message: string; website?: string }) => api.post('/customer/contact', b);
+export const sendContactMessage = async (b: {
+  name: string;
+  email: string;
+  phone?: string;
+  topic?: string;
+  subject: string;
+  message: string;
+  website?: string;
+}) => {
+  const res = await fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(b),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.error || 'Failed to send message');
+  }
+  return data;
+};
 
 export const subscribeNewsletter = (email: string, source = 'website') => api.post('/customer/newsletter/subscribe', { email, source });
 

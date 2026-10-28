@@ -25,6 +25,7 @@ export interface SocialLinks {
   tiktok?: string;
   twitter?: string;
   linkedin?: string;
+  whatsapp?: string;
 }
 
 export interface CraftedProductItem {
@@ -198,16 +199,21 @@ export const DEFAULT_SETTINGS: SettingsMap = {
     tagline: 'Elegance in Every Stitch',
     logoUrl: null,
     faviconUrl: null,
-    contactEmail: null,
-    hotline: null,
-    whatsapp: null,
-    address: null,
-    businessHours: null,
+    contactEmail: 'neyamat7.ullah@gmail.com',
+    hotline: '01620490985',
+    whatsapp: '01620490985',
+    address: 'Dhaka, Bangladesh',
+    businessHours: 'Always Open (24/7)',
     currency: 'BDT',
     currencySymbol: '৳',
     metaTitle: "Fairu Fashion | Elegant Women's Dresses & Wear",
     metaDescription: "Discover exquisite women's dresses, party wear, ethnic kurtis, modest abayas, and chic evening gowns at Fairu Fashion.",
-    socialLinks: {},
+    socialLinks: {
+      facebook: 'https://www.facebook.com/fairufashion',
+      instagram: 'https://www.instagram.com/fairufashion',
+      tiktok: 'https://www.tiktok.com/@fairufashion',
+      whatsapp: 'https://wa.me/8801620490985',
+    },
     heroBgUrl: '/hero/hero-slide-1.webp',
     heroModels: [
       '/hero/hero-slide-1.webp',

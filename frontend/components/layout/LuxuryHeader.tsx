@@ -427,7 +427,7 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
               href="/contact"
               className="text-[#4A423D] dark:text-neutral-300 hover:text-[#9E596B] transition-colors"
             >
-              About
+              Contact
             </Link>
           </nav>
 
