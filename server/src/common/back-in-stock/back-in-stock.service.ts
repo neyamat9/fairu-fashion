@@ -37,7 +37,9 @@ export class BackInStockAlertService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   onModuleInit() {
-    const every = Number(process.env.BACK_IN_STOCK_INTERVAL_MS) || 60_000;
+    const raw = process.env.BACK_IN_STOCK_INTERVAL_MS;
+    const every = raw !== undefined ? Number(raw) : 21_600_000;
+    if (every <= 0) return;
     this.timer = setInterval(() => void this.run(), every);
     this.timer.unref();
   }

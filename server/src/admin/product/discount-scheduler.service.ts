@@ -26,10 +26,11 @@ export class DiscountSchedulerService implements OnModuleInit, OnModuleDestroy {
   ) {}
 
   onModuleInit() {
-    const every = Number(process.env.DISCOUNT_SCHEDULER_INTERVAL_MS) || 60_000;
+    const raw = process.env.DISCOUNT_SCHEDULER_INTERVAL_MS;
+    const every = raw !== undefined ? Number(raw) : 3_600_000;
+    if (every <= 0) return;
     this.timer = setInterval(() => void this.run(), every);
     this.timer.unref();
-    void this.run();
   }
 
   onModuleDestroy() {
