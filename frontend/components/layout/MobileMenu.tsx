@@ -5,7 +5,7 @@ import { startNavigation } from "@/components/layout/NavigationGate";
 import { gsap } from "@/components/motion/gsap";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useWishlist } from "@/lib/hooks/use-wishlist";
-import { Heart, LifeBuoy, LogOut, type LucideIcon, Moon, Package, PackageSearch, RotateCcw, Sun, UserRound, X } from "lucide-react";
+import { Heart, LifeBuoy, LogOut, type LucideIcon, Moon, Package, PackageSearch, RotateCcw, ShoppingBag, Sparkles, Sun, UserRound, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -87,6 +87,9 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
   if (!mounted) return null;
 
   const items: Item[] = [
+    { href: "/account", label: "My Profile", icon: UserRound },
+    { href: "/products", label: "Shop all products", icon: ShoppingBag },
+    { href: "/products?sortBy=newest", label: "New arrivals", icon: Sparkles },
     { href: "/orders", label: "My orders", icon: Package },
     { href: "/wishlist", label: "Wishlist", icon: Heart, badge: vaultCount },
     { href: "/track-order", label: "Track an order", icon: PackageSearch },
@@ -96,6 +99,10 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
 
   const go = (href: string) => {
     onClose();
+    if (href === "/account" && !user) {
+      openAuth("login");
+      return;
+    }
     startNavigation(href);
   };
 
@@ -192,7 +199,21 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
           {/* pages */}
           <nav aria-label="Menu" className="mt-3 space-y-1.5">
             {items.map((it) => (
-              <Link key={it.href} href={it.href} onClick={() => go(it.href)} data-menu-row className="flex items-center gap-3 rounded border border-border bg-card px-3.5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-brand-orange hover:text-accent-text">
+              <Link
+                key={it.href}
+                href={it.href}
+                onClick={(e) => {
+                  if (it.href === "/account" && !user) {
+                    e.preventDefault();
+                    onClose();
+                    openAuth("login");
+                    return;
+                  }
+                  go(it.href);
+                }}
+                data-menu-row
+                className="flex items-center gap-3 rounded border border-border bg-card px-3.5 py-3 text-sm font-semibold text-foreground transition-colors hover:border-brand-orange hover:text-accent-text"
+              >
                 <it.icon className="h-[18px] w-[18px] text-muted-foreground" aria-hidden="true" />
                 <span className="flex-1">{it.label}</span>
                 {!!it.badge && <span className="rounded bg-brand-orange px-1.5 py-0.5 text-[11px] font-black text-on-orange">{it.badge}</span>}

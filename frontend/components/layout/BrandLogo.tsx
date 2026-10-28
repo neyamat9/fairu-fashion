@@ -16,14 +16,14 @@ export default function BrandLogo({
 }) {
   const dims = {
     sm: { tile: "size-9 p-1", text: "text-lg", tag: "text-[8px]" },
-    md: { tile: "size-10 p-1 sm:size-11", text: "text-xl sm:text-2xl md:text-[26px]", tag: "text-[9px]" },
+    md: { tile: "size-9 min-[360px]:size-10 p-1 sm:size-11", text: "text-lg min-[360px]:text-xl sm:text-2xl md:text-[26px]", tag: "text-[9px]" },
     lg: { tile: "size-12 p-1.5 sm:size-14", text: "text-2xl sm:text-3xl", tag: "text-[10px]" },
     xl: { tile: "size-16 p-2 sm:size-20", text: "text-4xl sm:text-5xl", tag: "text-xs" },
   }[size];
   const onDark = tone === "onDark";
 
   const body = (
-    <span className="group flex items-center gap-2.5 sm:gap-3">
+    <span className="group flex items-center gap-2 min-[360px]:gap-2.5 sm:gap-3">
       <span className={`${dims.tile} flex shrink-0 items-center justify-center rounded border border-border ${onDark ? "bg-white" : "bg-card dark:bg-white"}`}>
         {/* the artwork has a white background: multiply lets it melt into the cream tile in light mode */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -32,7 +32,7 @@ export default function BrandLogo({
       <span className="flex flex-col leading-none">
         <span className={`${dims.text} font-black tracking-tight font-outfit`}>
           <span className={onDark ? "text-white" : "text-primary dark:text-foreground"}>Fairu</span>
-          <span className="text-brand-orange ml-1.5">Fashion</span>
+          <span className="text-brand-orange ml-1 min-[360px]:ml-1.5">Fashion</span>
         </span>
         {tagline && (
           <span

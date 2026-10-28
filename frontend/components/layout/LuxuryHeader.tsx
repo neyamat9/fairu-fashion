@@ -29,10 +29,36 @@ interface LuxuryHeaderProps {
   categories?: Category[];
 }
 
+const DEFAULT_CATEGORIES: { slug: string; name: string; description?: string }[] = [
+  { slug: "three-piece", name: "Three Piece", description: "Unstitched & ready luxury three-piece suits" },
+  { slug: "two-piece", name: "Two Piece", description: "Chic everyday & festive two-piece sets" },
+  { slug: "kurtis", name: "Kurtis & Tunics", description: "Designer single kurtis & tunics" },
+  { slug: "sarees", name: "Sarees", description: "Traditional silk, cotton & party sarees" },
+  { slug: "abayas", name: "Modest Abayas", description: "Elegant modest wear & gowns" },
+];
+
 export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [mountedPath, setMountedPath] = useState<string | null>(null);
+
+  const displayCategories = categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES;
+
+  const [collectionsOpen, setCollectionsOpen] = useState(false);
+  const collectionsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const collectionsRef = useRef<HTMLDivElement>(null);
+
+  const handleCollectionsEnter = () => {
+    if (collectionsTimeoutRef.current) clearTimeout(collectionsTimeoutRef.current);
+    setCollectionsOpen(true);
+  };
+
+  const handleCollectionsLeave = () => {
+    if (collectionsTimeoutRef.current) clearTimeout(collectionsTimeoutRef.current);
+    collectionsTimeoutRef.current = setTimeout(() => {
+      setCollectionsOpen(false);
+    }, 180);
+  };
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -109,10 +135,33 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [searchOpen, mobileMenuOpen]);
 
-  // Close search dropdown on route change
+  // Close search and collections dropdown on route change
   useEffect(() => {
     setSearchOpen(false);
+    setCollectionsOpen(false);
   }, [pathname]);
+
+  // Close collections dropdown on click outside or Esc
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (collectionsRef.current && !collectionsRef.current.contains(e.target as Node)) {
+        setCollectionsOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && collectionsOpen) {
+        setCollectionsOpen(false);
+      }
+    };
+    if (collectionsOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [collectionsOpen]);
 
   // Focus search input when search is opened
   useEffect(() => {
@@ -227,7 +276,7 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
             : "bg-white/95 dark:bg-[#1a1716]/95 backdrop-blur-md shadow-sm border-b border-border/40 py-3.5 sm:py-4"
         }`}
       >
-        <div className="w-full max-w-[1440px] mx-auto px-5 sm:px-8 lg:px-12 flex items-center justify-between">
+        <div className="w-full max-w-[1440px] mx-auto px-3 min-[360px]:px-4 sm:px-8 lg:px-12 flex items-center justify-between">
           
           {/* Left: Previous Brand Logo & Site Name */}
           <div className="flex items-center">
@@ -247,21 +296,106 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
               Home
             </Link>
 
-            <div className="relative group/menu flex items-center gap-1 cursor-pointer text-[#4A423D] dark:text-neutral-300 hover:text-[#9E596B] transition-colors">
-              <Link href="/shop">Shop</Link>
-              <ChevronDown className="w-3.5 h-3.5 opacity-70 group-hover/menu:translate-y-0.5 transition-transform" />
-            </div>
+            <Link
+              href="/products"
+              className={`relative pb-1 font-medium transition-colors ${
+                pathname === "/products"
+                  ? "text-[#221C1A] dark:text-white font-semibold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#9E596B]"
+                  : "text-[#4A423D] dark:text-neutral-300 hover:text-[#9E596B]"
+              }`}
+            >
+              Shop
+            </Link>
 
             <Link
-              href="/search?q=new"
+              href="/products?sortBy=newest"
               className="text-[#4A423D] dark:text-neutral-300 hover:text-[#9E596B] transition-colors"
             >
               New Arrivals
             </Link>
 
-            <div className="relative group/menu flex items-center gap-1 cursor-pointer text-[#4A423D] dark:text-neutral-300 hover:text-[#9E596B] transition-colors">
-              <Link href="/category/three-piece">Collections</Link>
-              <ChevronDown className="w-3.5 h-3.5 opacity-70 group-hover/menu:translate-y-0.5 transition-transform" />
+            {/* Collections with Dropdown */}
+            <div
+              ref={collectionsRef}
+              className="relative group/collections"
+              onMouseEnter={handleCollectionsEnter}
+              onMouseLeave={handleCollectionsLeave}
+            >
+              <button
+                type="button"
+                onClick={() => setCollectionsOpen((prev) => !prev)}
+                className={`flex items-center gap-1 cursor-pointer transition-colors ${
+                  pathname?.startsWith("/category/")
+                    ? "text-[#221C1A] dark:text-white font-semibold"
+                    : "text-[#4A423D] dark:text-neutral-300 hover:text-[#9E596B]"
+                }`}
+                aria-expanded={collectionsOpen}
+                aria-haspopup="true"
+                aria-label="Toggle collections menu"
+              >
+                <span>Collections</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 opacity-70 transition-transform duration-200 ${
+                    collectionsOpen ? "rotate-180 text-[#9E596B]" : "group-hover/collections:translate-y-0.5"
+                  }`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {collectionsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                    transition={{ duration: 0.16, ease: "easeOut" }}
+                    className="absolute top-full left-1/2 -translate-x-1/2 pt-2.5 z-50 w-72 sm:w-80"
+                  >
+                    <div className="rounded border border-border/80 bg-white/95 dark:bg-[#1a1716]/95 p-2 backdrop-blur-xl shadow-xl shadow-black/10">
+                      <div className="flex items-center justify-between border-b border-border/50 px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                        <span>Shop by Collection</span>
+                        <span className="text-[10px] font-semibold text-[#9E596B]">Fairu Edit</span>
+                      </div>
+
+                      <div className="py-1">
+                        {displayCategories.map((cat) => (
+                          <Link
+                            key={cat.slug}
+                            href={`/category/${cat.slug}`}
+                            onClick={() => setCollectionsOpen(false)}
+                            className="group/item flex items-center justify-between rounded px-2.5 py-2 text-[#221C1A] transition-all hover:bg-[#FDF2F4] dark:text-neutral-200 dark:hover:bg-[#2e151e]"
+                          >
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#9E596B]/40 transition-colors group-hover/item:bg-[#9E596B]" />
+                              <div className="min-w-0">
+                                <span className="block truncate text-[13px] font-semibold transition-colors group-hover/item:text-[#9E596B]">
+                                  {cat.name}
+                                </span>
+                                {cat.description && (
+                                  <span className="block truncate text-[11px] text-muted-foreground">
+                                    {cat.description}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <ArrowRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground/40 opacity-0 transition-all group-hover/item:translate-x-0.5 group-hover/item:text-[#9E596B] group-hover/item:opacity-100" />
+                          </Link>
+                        ))}
+                      </div>
+
+                      <div className="mt-1 border-t border-border/50 pt-1">
+                        <Link
+                          href="/products"
+                          onClick={() => setCollectionsOpen(false)}
+                          className="flex items-center justify-between rounded px-2.5 py-1.5 text-xs font-bold text-[#9E596B] transition-colors hover:bg-[#9E596B]/10"
+                        >
+                          <span>View all products</span>
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             <Link
@@ -273,23 +407,23 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
           </nav>
 
           {/* Right: Actions (Search, User, Cart, Mobile Menu) */}
-          <div className="flex items-center gap-4 sm:gap-6 text-[#2E2825] dark:text-neutral-200">
+          <div className="flex items-center gap-1.5 min-[360px]:gap-2.5 sm:gap-4 md:gap-6 text-[#2E2825] dark:text-neutral-200">
             {/* Search Trigger Icon */}
             <button
               type="button"
               data-search-trigger
               onClick={() => setSearchOpen((prev) => !prev)}
               aria-label="Open search"
-              className={`p-1.5 rounded-full transition-all cursor-pointer ${
+              className={`p-1 sm:p-1.5 rounded-full transition-all cursor-pointer ${
                 searchOpen
                   ? "bg-[#9E596B] text-white"
                   : "hover:text-[#9E596B] hover:scale-105"
               }`}
             >
-              <Search className="w-5 h-5 stroke-[1.8]" />
+              <Search className="w-[18px] h-[18px] min-[360px]:w-5 min-[360px]:h-5 stroke-[1.8]" />
             </button>
 
-            {/* User Account */}
+            {/* User Account - Desktop only (>=md). On mobile (<md), Profile lives inside the hamburger menu */}
             <button
               type="button"
               onClick={() => {
@@ -297,7 +431,7 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
                 else router.push("/account");
               }}
               aria-label="Account"
-              className="p-1 hover:text-[#9E596B] hover:scale-105 transition-all cursor-pointer"
+              className="hidden md:flex p-1 hover:text-[#9E596B] hover:scale-105 transition-all cursor-pointer"
             >
               <User className="w-5 h-5 stroke-[1.8]" />
             </button>
@@ -309,9 +443,9 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
               aria-label={`Shopping Bag (${cartCount} items)`}
               className="relative p-1 hover:text-[#9E596B] hover:scale-105 transition-all cursor-pointer"
             >
-              <ShoppingBag className="w-5 h-5 stroke-[1.8]" />
+              <ShoppingBag className="w-[18px] h-[18px] min-[360px]:w-5 min-[360px]:h-5 stroke-[1.8]" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-[#9E596B] text-white text-[10px] font-bold flex items-center justify-center leading-none shadow-sm">
+                <span className="absolute -top-1 -right-1 min-w-[15px] h-3.5 px-0.5 rounded-full bg-[#9E596B] text-white text-[9px] font-bold flex items-center justify-center leading-none shadow-sm">
                   {cartCount}
                 </span>
               )}
@@ -324,7 +458,7 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
               aria-label="Open mobile menu"
               className="md:hidden p-1 hover:text-[#9E596B] transition-colors"
             >
-              <Menu className="w-6 h-6 stroke-[1.8]" />
+              <Menu className="w-5 h-5 min-[360px]:w-6 min-[360px]:h-6 stroke-[1.8]" />
             </button>
           </div>
 
