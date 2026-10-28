@@ -32,7 +32,20 @@ interface LuxuryHeaderProps {
 export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const isHome = pathname === "/";
+  const [mountedPath, setMountedPath] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setMountedPath(window.location.pathname);
+    }
+  }, [pathname]);
+
+  const activePath = mountedPath ?? pathname;
+  const isHome =
+    !activePath ||
+    activePath === "/" ||
+    activePath === "" ||
+    activePath.split(/[?#]/)[0].replace(/\/+$/, "") === "";
 
   const { cartCount, openCart } = useCart();
   const { isAuthenticated } = useAuth();
@@ -91,6 +104,7 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
     };
 
     lastScrollY.current = window.scrollY;
+    handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [searchOpen, mobileMenuOpen]);
