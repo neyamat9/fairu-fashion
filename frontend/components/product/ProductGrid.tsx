@@ -250,6 +250,8 @@ export default function ProductGrid({
           resultCount={meta.total}
           sortBy={sortBy}
           onSortChange={setSortBy}
+          inStockOnly={filters.inStockOnly}
+          onInStockChange={(inStock) => setFilters((prev) => ({ ...prev, inStockOnly: inStock }))}
           onOpenFilters={() => setMobileFiltersOpen(true)}
           activeCount={activeFilters.length}
         />

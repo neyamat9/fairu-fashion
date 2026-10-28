@@ -127,22 +127,6 @@ export default function FilterSidebar({
         </div>
       </div>
 
-      {/* Availability */}
-      <Section title="Availability">
-        <button
-          type="button"
-          role="switch"
-          aria-checked={filters.inStockOnly}
-          onClick={() => onFiltersChange({ ...filters, inStockOnly: !filters.inStockOnly })}
-          className="group flex w-full items-center justify-between gap-3 rounded border border-border bg-background px-3.5 py-3 text-left transition-colors hover:border-brand-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange/50"
-        >
-          <span className="text-sm font-medium text-foreground">In stock only</span>
-          <span className={`relative h-6 w-11 shrink-0 rounded transition-colors duration-200 ${filters.inStockOnly ? "bg-brand-orange" : "bg-secondary"}`}>
-            <span className={`absolute left-0.5 top-0.5 h-5 w-5 rounded bg-card shadow transition-transform duration-200 ${filters.inStockOnly ? "translate-x-5" : ""}`} />
-          </span>
-        </button>
-      </Section>
-
       {/* Price */}
       <Section title="Price range">
         <div className="px-1 pb-1 pt-2">

@@ -9,6 +9,8 @@ interface SortBarProps {
   resultCount: number;
   sortBy: SortOption;
   onSortChange: (sort: SortOption) => void;
+  inStockOnly?: boolean;
+  onInStockChange?: (inStock: boolean) => void;
   onOpenFilters?: () => void;
   /** How many filters are switched on (shown on the mobile Filters button) */
   activeCount?: number;
@@ -22,11 +24,19 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "rating", label: "Top Rated" },
 ];
 
-export default function SortBar({ resultCount, sortBy, onSortChange, onOpenFilters, activeCount = 0 }: SortBarProps) {
+export default function SortBar({
+  resultCount,
+  sortBy,
+  onSortChange,
+  inStockOnly = false,
+  onInStockChange,
+  onOpenFilters,
+  activeCount = 0,
+}: SortBarProps) {
   const current = SORT_OPTIONS.find((o) => o.value === sortBy) ?? SORT_OPTIONS[0];
 
   return (
-    <div className="mb-4 flex items-center justify-between gap-3 rounded border border-border bg-card px-3 py-2.5 sm:px-4">
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded border border-border bg-card px-3 py-2.5 sm:px-4">
       <div className="flex min-w-0 items-center gap-3">
         {onOpenFilters && (
           <button
@@ -45,36 +55,67 @@ export default function SortBar({ resultCount, sortBy, onSortChange, onOpenFilte
         </p>
       </div>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
+      <div className="flex items-center gap-2 sm:gap-3">
+        {onInStockChange !== undefined && (
           <button
             type="button"
-            aria-label={`Sort products: ${current.label}`}
-            className="group flex shrink-0 items-center gap-2 rounded border border-border bg-background px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:border-brand-orange focus-visible:border-brand-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange/30 data-[state=open]:border-brand-orange"
+            role="switch"
+            aria-checked={inStockOnly}
+            onClick={() => onInStockChange(!inStockOnly)}
+            className={`group flex shrink-0 items-center gap-2 rounded border bg-background px-2.5 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium transition-colors cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange/30 ${
+              inStockOnly
+                ? "border-brand-orange text-foreground shadow-xs"
+                : "border-border text-muted-foreground hover:border-brand-orange hover:text-foreground"
+            }`}
+            aria-label="Filter in stock only"
           >
-            <ArrowDownUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-            <span className="hidden text-muted-foreground sm:inline">Sort by:</span>
-            <span>{current.label}</span>
-            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" />
+            <span className="hidden sm:inline">In stock only</span>
+            <span className="sm:hidden">In stock</span>
+            <span
+              className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded transition-colors duration-200 ${
+                inStockOnly ? "bg-brand-orange" : "bg-secondary"
+              }`}
+            >
+              <span
+                className={`inline-block h-4 w-4 rounded bg-card shadow-sm transition-transform duration-200 ${
+                  inStockOnly ? "translate-x-[18px]" : "translate-x-0.5"
+                }`}
+              />
+            </span>
           </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" sideOffset={8} className="z-[1100] min-w-56 rounded border border-border bg-popover p-1.5 shadow-xl">
-          <DropdownMenuRadioGroup value={sortBy} onValueChange={(v) => onSortChange(v as SortOption)}>
-            {SORT_OPTIONS.map((opt) => (
-              <DropdownMenuRadioItem
-                key={opt.value}
-                value={opt.value}
-                className="cursor-pointer rounded px-3 py-2.5 pl-3 text-sm font-medium text-foreground focus:bg-accent focus:text-foreground data-[state=checked]:bg-accent data-[state=checked]:font-bold [&>span:first-child]:hidden"
-              >
-                <span className="flex w-full items-center justify-between gap-3">
-                  {opt.label}
-                  {opt.value === sortBy && <Check className="h-4 w-4 text-brand-orange" strokeWidth={3} aria-hidden="true" />}
-                </span>
-              </DropdownMenuRadioItem>
-            ))}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        )}
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              aria-label={`Sort products: ${current.label}`}
+              className="group flex shrink-0 items-center gap-2 rounded border border-border bg-background px-3 py-2 text-sm font-semibold text-foreground transition-colors hover:border-brand-orange focus-visible:border-brand-orange focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange/30 data-[state=open]:border-brand-orange"
+            >
+              <ArrowDownUp className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+              <span className="hidden text-muted-foreground sm:inline">Sort by:</span>
+              <span>{current.label}</span>
+              <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" aria-hidden="true" />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" sideOffset={8} className="z-[1100] min-w-56 rounded border border-border bg-popover p-1.5 shadow-xl">
+            <DropdownMenuRadioGroup value={sortBy} onValueChange={(v) => onSortChange(v as SortOption)}>
+              {SORT_OPTIONS.map((opt) => (
+                <DropdownMenuRadioItem
+                  key={opt.value}
+                  value={opt.value}
+                  className="cursor-pointer rounded px-3 py-2.5 pl-3 text-sm font-medium text-foreground focus:bg-accent focus:text-foreground data-[state=checked]:bg-accent data-[state=checked]:font-bold [&>span:first-child]:hidden"
+                >
+                  <span className="flex w-full items-center justify-between gap-3">
+                    {opt.label}
+                    {opt.value === sortBy && <Check className="h-4 w-4 text-brand-orange" strokeWidth={3} aria-hidden="true" />}
+                  </span>
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 }
