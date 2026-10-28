@@ -114,13 +114,13 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
   };
 
   return (
-    <section className="w-full py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-transparent">
+    <section className="w-full py-8 sm:py-16 px-2 min-[360px]:px-3 sm:px-6 lg:px-8 bg-transparent">
       <motion.div
         initial={{ opacity: 0, y: 28, scale: 0.985 }}
         whileInView={{ opacity: 1, y: 0, scale: 1 }}
         viewport={{ once: true, margin: "-40px" }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-[1400px] mx-auto rounded-[4px] bg-[#F7F7F8] p-6 sm:p-10 lg:p-12 border border-neutral-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.03)]"
+        className="w-full max-w-[1400px] mx-auto rounded-[4px] bg-[#F7F7F8] p-2.5 min-[360px]:p-3.5 sm:p-8 lg:p-12 border border-neutral-200/80 shadow-[0_20px_50px_rgba(0,0,0,0.03)]"
       >
         {/* Section Header */}
         <motion.div
@@ -128,7 +128,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 sm:mb-10 pb-6 border-b border-neutral-200/60"
+          className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 mb-6 sm:mb-10 pb-4 sm:pb-6 border-b border-neutral-200/60 px-1 sm:px-0"
         >
           <div>
             <h2 className="font-outfit font-normal text-2xl sm:text-3xl lg:text-4xl tracking-tight text-neutral-900">
@@ -156,7 +156,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
           HORIZONTAL ACCORDION CARDS CONTAINER
           GPU-accelerated cubic-bezier expansion — 100% fluid, zero jitter / vibration!
         */}
-        <div className="flex flex-col lg:flex-row gap-3 sm:gap-4 h-auto lg:h-[500px] xl:h-[540px] w-full">
+        <div className="flex flex-col lg:flex-row gap-4 sm:gap-5 lg:gap-3 xl:gap-4 h-auto lg:h-[500px] xl:h-[540px] w-full">
           {items.map((card, idx) => {
             const isHovered = hoveredIdx === idx;
             const href = getProductHref(card.slug);
@@ -184,7 +184,7 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 onMouseEnter={() => setHoveredIdx(idx)}
-                className={`group flex flex-col justify-between min-h-[460px] lg:min-h-0 transition-[flex] duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-[flex] cursor-pointer ${
+                className={`group flex flex-col justify-between min-h-[420px] sm:min-h-[460px] lg:min-h-0 transition-[flex] duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] will-change-[flex] cursor-pointer ${
                   isHovered ? "lg:flex-[2.6]" : "lg:flex-1"
                 }`}
               >
@@ -215,11 +215,11 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
                   />
                 </div>
 
-                {/* 2. UNDER THE IMAGE (Outside, not inside the photo!) */}
-                <div className="relative mt-3 sm:mt-3.5 h-11 w-full overflow-hidden">
-                  {/* NOT EXPANDED (Collapsed): Shows JUST product name */}
+                {/* 2. UNDER THE IMAGE */}
+                <div className="relative mt-2.5 sm:mt-3.5 h-11 w-full overflow-hidden">
+                  {/* DESKTOP ONLY: Collapsed state (when not hovered) */}
                   <div
-                    className={`absolute inset-0 flex items-center transition-all duration-300 ease-out ${
+                    className={`hidden lg:flex absolute inset-0 items-center transition-all duration-300 ease-out ${
                       isHovered
                         ? "opacity-0 pointer-events-none -translate-y-2 scale-95"
                         : "opacity-100 translate-y-0 scale-100 pointer-events-auto"
@@ -233,15 +233,16 @@ export const CraftedForWomanSection: React.FC<CraftedForWomanSectionProps> = ({
                     </div>
                   </div>
 
-                  {/* EXPANDED: Light bar, product name & price, cart icon ONLY, NO arrow icon */}
+                  {/* MOBILE: Always visible with Name + Price + Cart button (no hover needed).
+                      DESKTOP: Expands when hovered. */}
                   <div
-                    className={`absolute inset-0 flex items-center transition-all duration-300 ease-out ${
+                    className={`flex absolute inset-0 items-center transition-all duration-300 ease-out ${
                       isHovered
                         ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
-                        : "opacity-0 pointer-events-none translate-y-2 scale-95"
+                        : "opacity-100 translate-y-0 scale-100 pointer-events-auto lg:opacity-0 lg:pointer-events-none lg:translate-y-2 lg:scale-95"
                     }`}
                   >
-                    <div className="w-full flex items-center justify-between gap-2 p-1.5 pl-3.5 sm:pl-4 rounded-[4px] bg-white text-neutral-900 shadow-sm border border-neutral-200/90">
+                    <div className="w-full flex items-center justify-between gap-2 p-1.5 pl-3 sm:pl-4 rounded-[4px] bg-white text-neutral-900 shadow-sm border border-neutral-200/90">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0 pr-1">
                         <span className="font-poppins text-xs sm:text-[13px] font-semibold text-neutral-900 truncate">
                           {card.name}
