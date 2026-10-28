@@ -25,7 +25,7 @@ const RANGES = [
   { value: "90", label: "Last 90 days" },
   { value: "365", label: "Last 12 months" },
 ];
-const PIE = ["#053972", "#f99b10", "#1f5ca3", "#fbbe62", "#7fa9d9", "#b9660a"];
+const PIE = ["#ba3d5d", "#e06d88", "#7a1b34", "#f495af", "#d16283", "#eb688c"];
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -109,15 +109,15 @@ export default function Dashboard() {
                 <AreaChart data={d?.sales ?? []} margin={{ left: -10, right: 8, top: 8 }}>
                   <defs>
                     <linearGradient id="rev" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#f99b10" stopOpacity={0.45} />
-                      <stop offset="100%" stopColor="#f99b10" stopOpacity={0.02} />
+                      <stop offset="0%" stopColor="#e06d88" stopOpacity={0.45} />
+                      <stop offset="100%" stopColor="#e06d88" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid stroke={grid} vertical={false} />
                   <XAxis dataKey="period" tick={{ fill: axis, fontSize: 11 }} tickFormatter={(v: string) => v.slice(5)} axisLine={false} tickLine={false} minTickGap={24} />
                   <YAxis tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={(v: number) => (v >= 1000 ? `${v / 1000}k` : String(v))} />
                   <Tooltip contentStyle={tip} formatter={(v, n) => [n === "revenue" ? money(Number(v)) : v, titleCase(String(n))]} labelFormatter={(l) => dateOnly(String(l))} />
-                  <Area type="monotone" dataKey="revenue" stroke="#f99b10" strokeWidth={2.5} fill="url(#rev)" />
+                  <Area type="monotone" dataKey="revenue" stroke="#e06d88" strokeWidth={2.5} fill="url(#rev)" />
                 </AreaChart>
               </ResponsiveContainer>
             )}
@@ -177,7 +177,7 @@ export default function Dashboard() {
                   <XAxis type="number" hide />
                   <YAxis type="category" dataKey="name" width={100} tick={{ fill: axis, fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={tip} formatter={(v) => money(Number(v))} cursor={{ fill: "transparent" }} />
-                  <Bar dataKey="revenue" fill="#053972" radius={[0, 4, 4, 0]} barSize={16} />
+                  <Bar dataKey="revenue" fill="#ba3d5d" radius={[0, 4, 4, 0]} barSize={16} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (

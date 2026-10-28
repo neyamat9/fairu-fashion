@@ -228,10 +228,10 @@ export default function RobotMascot({ className = "" }: { className?: string }) 
 
   const eye = (c: { x: number; y: number }, side: "l" | "r") => (
     <g data-eye>
-      <circle cx={c.x} cy={c.y} r="23" fill="#ffffff" stroke="#c9e3fb" strokeWidth="2.5" />
+      <circle cx={c.x} cy={c.y} r="23" fill="#ffffff" stroke="#fcdde5" strokeWidth="2.5" />
       <g data-pupil data-pupil-r={side === "r" ? "" : undefined}>
-        <circle cx={c.x} cy={c.y} r="11.5" fill="#053972" />
-        <circle cx={c.x} cy={c.y} r="6" fill="#0a4a8f" />
+        <circle cx={c.x} cy={c.y} r="11.5" fill="#4a1424" />
+        <circle cx={c.x} cy={c.y} r="6" fill="#8e2b47" />
         <circle cx={c.x + 4} cy={c.y - 4.5} r="3.2" fill="#fff" />
       </g>
       {/* eyelids, clipped to the eye; parked outside it until a blink */}
@@ -240,11 +240,11 @@ export default function RobotMascot({ className = "" }: { className?: string }) 
       </clipPath>
       <g clipPath={`url(#rm-eye-clip-${side})`}>
         <g data-lid-bot transform={`translate(0 ${LID_BOT_OPEN})`}>
-          <path d={`M${c.x - 30} ${c.y + 60} V${c.y + 6} Q${c.x} ${c.y} ${c.x + 30} ${c.y + 6} V${c.y + 60} Z`} fill="#bcdcf7" />
+          <path d={`M${c.x - 30} ${c.y + 60} V${c.y + 6} Q${c.x} ${c.y} ${c.x + 30} ${c.y + 6} V${c.y + 60} Z`} fill="#f9d5df" />
         </g>
         <g data-lid-top transform={`translate(0 ${LID_TOP_OPEN})`}>
-          <path d={`M${c.x - 30} ${c.y - 70} H${c.x + 30} V${c.y + 4} Q${c.x} ${c.y + 14} ${c.x - 30} ${c.y + 4} Z`} fill="#bcdcf7" />
-          <path d={`M${c.x - 30} ${c.y + 4} Q${c.x} ${c.y + 14} ${c.x + 30} ${c.y + 4}`} fill="none" stroke="#053972" strokeWidth="3" strokeLinecap="round" />
+          <path d={`M${c.x - 30} ${c.y - 70} H${c.x + 30} V${c.y + 4} Q${c.x} ${c.y + 14} ${c.x - 30} ${c.y + 4} Z`} fill="#f9d5df" />
+          <path d={`M${c.x - 30} ${c.y + 4} Q${c.x} ${c.y + 14} ${c.x + 30} ${c.y + 4}`} fill="none" stroke="#4a1424" strokeWidth="3" strokeLinecap="round" />
         </g>
       </g>
     </g>
@@ -252,10 +252,10 @@ export default function RobotMascot({ className = "" }: { className?: string }) 
 
   const hand = (name: "l" | "r") => (
     <g data-hand-l={name === "l" ? "" : undefined} data-hand-r={name === "r" ? "" : undefined} transform="translate(0 260)">
-      <rect x="-31" y="-27" width="62" height="54" rx="25" fill="#f99b10" />
-      <rect x="-31" y="-27" width="62" height="24" rx="12" fill="#ffb94d" opacity="0.7" />
-      <path d="M-12 -24v16M2 -26v18M16 -24v16" stroke="#d97f00" strokeWidth="2.6" strokeLinecap="round" opacity="0.8" />
-      <circle cx="-22" cy="16" r="3" fill="#ffd9a0" opacity="0.7" />
+      <rect x="-31" y="-27" width="62" height="54" rx="25" fill="#e06d88" />
+      <rect x="-31" y="-27" width="62" height="24" rx="12" fill="#f4a2b6" opacity="0.8" />
+      <path d="M-12 -24v16M2 -26v18M16 -24v16" stroke="#ba3d5d" strokeWidth="2.6" strokeLinecap="round" opacity="0.85" />
+      <circle cx="-22" cy="16" r="3" fill="#fcdde5" opacity="0.75" />
     </g>
   );
 
@@ -263,12 +263,12 @@ export default function RobotMascot({ className = "" }: { className?: string }) 
     <svg ref={root} viewBox="0 0 240 215" className={`overflow-visible ${className}`} role="img" aria-label="Friendly robot mascot" data-mode={mode}>
       <defs>
         <linearGradient id="rm-head" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#1d6ac9" />
-          <stop offset="1" stopColor="#053972" />
+          <stop offset="0" stopColor="#c9476c" />
+          <stop offset="1" stopColor="#5c1d30" />
         </linearGradient>
         <linearGradient id="rm-body" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffb94d" />
-          <stop offset="1" stopColor="#f99b10" />
+          <stop offset="0" stopColor="#f4a2b6" />
+          <stop offset="1" stopColor="#e06d88" />
         </linearGradient>
       </defs>
 
@@ -276,33 +276,33 @@ export default function RobotMascot({ className = "" }: { className?: string }) 
         <g data-bob>
           {/* body (mostly tucked behind the card) */}
           <rect x="62" y="158" width="116" height="70" rx="26" fill="url(#rm-body)" />
-          <rect x="108" y="170" width="24" height="10" rx="5" fill="#fff" opacity="0.55" />
+          <rect x="108" y="170" width="24" height="10" rx="5" fill="#fff" opacity="0.6" />
 
           <g data-head>
             {/* antenna */}
             <g data-antenna>
-              <rect x="117.5" y="14" width="5" height="26" rx="2.5" fill="#053972" />
-              <circle data-ball cx="120" cy="12" r="9" fill="#f99b10" />
-              <circle cx="116.5" cy="8.5" r="2.6" fill="#fff" opacity="0.7" />
+              <rect x="117.5" y="14" width="5" height="26" rx="2.5" fill="#5c1d30" />
+              <circle data-ball cx="120" cy="12" r="9" fill="#e06d88" />
+              <circle cx="116.5" cy="8.5" r="2.6" fill="#fff" opacity="0.75" />
             </g>
             {/* ears */}
-            <rect x="12" y="84" width="20" height="46" rx="10" fill="#f99b10" />
-            <rect x="208" y="84" width="20" height="46" rx="10" fill="#f99b10" />
+            <rect x="12" y="84" width="20" height="46" rx="10" fill="#e06d88" />
+            <rect x="208" y="84" width="20" height="46" rx="10" fill="#e06d88" />
             {/* head + face plate */}
             <rect x="26" y="38" width="188" height="128" rx="38" fill="url(#rm-head)" />
-            <rect x="26" y="38" width="188" height="44" rx="30" fill="#fff" opacity="0.1" />
+            <rect x="26" y="38" width="188" height="44" rx="30" fill="#fff" opacity="0.12" />
             <g data-plate>
-              <rect x="46" y="58" width="148" height="92" rx="28" fill="#e8f5ff" />
+              <rect x="46" y="58" width="148" height="92" rx="28" fill="#fff7f9" />
               {eye(EYE_L, "l")}
               {eye(EYE_R, "r")}
-              <ellipse data-cheek cx="68" cy="130" rx="11" ry="6.5" fill="#ff9f8e" opacity="0.55" />
-              <ellipse data-cheek cx="172" cy="130" rx="11" ry="6.5" fill="#ff9f8e" opacity="0.55" />
+              <ellipse data-cheek cx="68" cy="130" rx="11" ry="6.5" fill="#fca5b9" opacity="0.65" />
+              <ellipse data-cheek cx="172" cy="130" rx="11" ry="6.5" fill="#fca5b9" opacity="0.65" />
               <g strokeLinecap="round" strokeLinejoin="round">
-                <path data-mouth="smile" d="M100 126 Q120 142 140 126" fill="none" stroke="#053972" strokeWidth="5" />
-                <path data-mouth="smirk" d="M104 128 Q124 140 142 122" fill="none" stroke="#053972" strokeWidth="5" opacity="0" />
-                <path data-mouth="happy" d="M97 120 Q120 156 143 120 Z" fill="#053972" stroke="#053972" strokeWidth="4" opacity="0" />
-                <path data-mouth="sad" d="M102 138 Q120 122 138 138" fill="none" stroke="#053972" strokeWidth="5" opacity="0" />
-                <ellipse data-mouth="o" cx="120" cy="132" rx="7" ry="8" fill="#053972" opacity="0" />
+                <path data-mouth="smile" d="M100 126 Q120 142 140 126" fill="none" stroke="#4a1424" strokeWidth="5" />
+                <path data-mouth="smirk" d="M104 128 Q124 140 142 122" fill="none" stroke="#4a1424" strokeWidth="5" opacity="0" />
+                <path data-mouth="happy" d="M97 120 Q120 156 143 120 Z" fill="#4a1424" stroke="#4a1424" strokeWidth="4" opacity="0" />
+                <path data-mouth="sad" d="M102 138 Q120 122 138 138" fill="none" stroke="#4a1424" strokeWidth="5" opacity="0" />
+                <ellipse data-mouth="o" cx="120" cy="132" rx="7" ry="8" fill="#4a1424" opacity="0" />
               </g>
             </g>
           </g>
@@ -315,7 +315,7 @@ export default function RobotMascot({ className = "" }: { className?: string }) 
         {/* confetti for success */}
         <g>
           {Array.from({ length: 8 }).map((_, i) => (
-            <rect key={i} data-spark x="-5" y="-5" width="10" height="10" rx="2" opacity="0" fill={["#f99b10", "#1d6ac9", "#22c55e", "#ff6fa5"][i % 4]} />
+            <rect key={i} data-spark x="-5" y="-5" width="10" height="10" rx="2" opacity="0" fill={["#e06d88", "#c9476c", "#f4a2b6", "#ffd1dc"][i % 4]} />
           ))}
         </g>
       </g>

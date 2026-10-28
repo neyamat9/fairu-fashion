@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 /** The one button of the sign-in forms: wide, softly rounded, gradient with a lift on hover. */
 export const authButton =
-  "h-13 rounded bg-linear-to-r from-navy-700 via-navy-600 to-sky-500 px-8 text-[15px] font-semibold text-white shadow-lg shadow-navy-700/25 transition-all hover:-translate-y-0.5 hover:from-navy-600 hover:to-sky-400 hover:shadow-xl hover:shadow-navy-700/30 active:translate-y-0 dark:from-orange-500 dark:via-orange-500 dark:to-orange-400 dark:text-orange-950 dark:shadow-orange-500/20";
+  "h-13 rounded bg-linear-to-r from-primary via-navy-600 to-orange-500 px-8 text-[15px] font-semibold text-white shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 hover:from-navy-700 hover:to-orange-600 hover:shadow-xl hover:shadow-primary/30 active:translate-y-0 dark:from-orange-500 dark:via-orange-500 dark:to-orange-400 dark:text-white dark:shadow-orange-500/20";
 
 interface AuthInputProps extends Omit<ComponentProps<"input">, "placeholder"> {
   label: string;
@@ -52,10 +52,10 @@ export const AuthInput = forwardRef<HTMLInputElement, AuthInputProps>(function A
 /** Rounded capsules that drift on the colour side. left/bottom in %, size in rem. */
 const CAPSULES = [
   { l: -3, b: -6, w: 13, h: 4.6, from: "from-orange-300", to: "to-orange-500", o: 0.95, d: 0 },
-  { l: 20, b: 2, w: 16, h: 5.4, from: "from-amber-200", to: "to-orange-400", o: 0.9, d: 1.2 },
-  { l: 50, b: -8, w: 11, h: 3.8, from: "from-orange-200", to: "to-amber-400", o: 0.85, d: 2.4 },
-  { l: 5, b: 14, w: 8, h: 3, from: "from-sky-200", to: "to-sky-400", o: 0.55, d: 0.6 },
-  { l: 68, b: 10, w: 9, h: 3.2, from: "from-white", to: "to-sky-200", o: 0.4, d: 1.8 },
+  { l: 20, b: 2, w: 16, h: 5.4, from: "from-orange-200", to: "to-orange-400", o: 0.9, d: 1.2 },
+  { l: 50, b: -8, w: 11, h: 3.8, from: "from-orange-100", to: "to-orange-300", o: 0.85, d: 2.4 },
+  { l: 5, b: 14, w: 8, h: 3, from: "from-white", to: "to-orange-200", o: 0.55, d: 0.6 },
+  { l: 68, b: 10, w: 9, h: 3.2, from: "from-white", to: "to-orange-100", o: 0.4, d: 1.8 },
 ];
 const LINES = [
   { l: 14, b: 14, w: 6 },
@@ -71,16 +71,16 @@ const LINES = [
  */
 export function AuthLayout() {
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-linear-to-br from-navy-900 via-navy-700 to-sky-500 p-3 sm:p-6">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-linear-to-br from-navy-950 via-navy-900 to-navy-800 p-3 sm:p-6">
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute -left-32 -top-40 size-160 rounded-full bg-sky-400/25 blur-3xl" />
-        <div className="absolute -bottom-52 -right-40 size-160 rounded-full bg-orange-500/25 blur-3xl" />
+        <div className="absolute -left-32 -top-40 size-160 rounded-full bg-orange-500/20 blur-3xl" />
+        <div className="absolute -bottom-52 -right-40 size-160 rounded-full bg-primary/25 blur-3xl" />
         <div className="auth-grid absolute inset-0 opacity-[0.06]" />
       </div>
 
       <div className="auth-rise relative grid w-full max-w-5xl overflow-hidden rounded bg-card shadow-2xl shadow-navy-950/50 lg:min-h-[min(38rem,calc(100dvh-5rem))] lg:grid-cols-2">
         {/* ------------------------------ colour side ------------------------------ */}
-        <section className="relative isolate flex min-h-52 flex-col justify-center overflow-hidden bg-linear-to-br from-navy-700 via-navy-600 to-sky-500 p-8 text-white sm:min-h-60 lg:min-h-0 lg:p-14">
+        <section className="relative isolate flex min-h-52 flex-col justify-center overflow-hidden bg-linear-to-br from-navy-800 via-navy-700 to-primary p-8 text-white sm:min-h-60 lg:min-h-0 lg:p-14">
           <div className="pointer-events-none absolute -right-16 top-10 -z-10 size-72 rounded-full bg-white/15 blur-2xl" aria-hidden="true" />
           <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
             {CAPSULES.map((c, i) => (
@@ -93,7 +93,7 @@ export function AuthLayout() {
             {LINES.map((l, i) => (
               <span key={i} className="absolute h-0.5 rounded-full bg-white/60 max-lg:hidden" style={{ left: `${l.l}%`, bottom: `${l.b}%`, width: `${l.w}rem`, transform: "rotate(-58deg)" }} />
             ))}
-            <div className="absolute -bottom-10 -right-10 size-40 rounded-full bg-sky-200/40 blur-xl lg:hidden" />
+            <div className="absolute -bottom-10 -right-10 size-40 rounded-full bg-orange-300/30 blur-xl lg:hidden" />
           </div>
 
           <div className="mb-5 flex items-center gap-2.5">

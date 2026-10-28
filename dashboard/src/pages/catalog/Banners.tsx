@@ -80,7 +80,7 @@ function BannerDialog({ banner, defaultPosition, onClose }: { banner: Banner | n
             <Field label="Show until" hint="Empty = no end"><Input type="datetime-local" value={f.endDate} onChange={(e) => setF({ ...f, endDate: e.target.value })} /></Field>
           </div>
           <div className="grid gap-3 sm:grid-cols-3">
-            <Field label="Background colour"><Input value={f.bgColor} onChange={(e) => setF({ ...f, bgColor: e.target.value })} placeholder="#053972" /></Field>
+            <Field label="Background colour"><Input value={f.bgColor} onChange={(e) => setF({ ...f, bgColor: e.target.value })} placeholder="#ba3d5d" /></Field>
             <Field label="Text colour"><Input value={f.textColor} onChange={(e) => setF({ ...f, textColor: e.target.value })} placeholder="#ffffff" /></Field>
             <label className="mt-6 flex cursor-pointer items-center gap-2 text-[13px]"><Switch checked={f.isActive} onCheckedChange={(isActive) => setF({ ...f, isActive })} />Active</label>
           </div>
