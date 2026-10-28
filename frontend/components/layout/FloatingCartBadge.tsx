@@ -102,48 +102,43 @@ export default function FloatingCartBadge() {
           animate={isPulsing ? { scale: [1, 1.15, 0.96, 1.06, 1] } : {}}
           transition={{ duration: 0.5, ease: "easeInOut" }}
           aria-label={`Open shopping cart with ${cartCount} items totaling ৳${cartTotal.toLocaleString("en-BD")}`}
-          className="relative flex flex-col items-center justify-center py-3.5 px-2.5 sm:px-3 rounded-l-2xl bg-gradient-to-b from-[#9E596B] to-[#7F384B] text-white shadow-[0_10px_35px_rgba(158,89,107,0.48)] hover:shadow-[0_14px_45px_rgba(158,89,107,0.65)] border-y border-l border-white/30 cursor-pointer transition-shadow"
+          className="relative flex flex-col items-center justify-center py-2.5 px-2.5 sm:px-3 rounded-l-xl bg-gradient-to-b from-[#9E596B] to-[#7F384B] text-white shadow-[0_10px_35px_rgba(158,89,107,0.48)] hover:shadow-[0_14px_45px_rgba(158,89,107,0.65)] border-y border-l border-white/30 cursor-pointer transition-shadow"
         >
           {/* Subtle ring pulse effect */}
           {isPulsing && (
-            <span className="absolute inset-0 rounded-l-2xl border-2 border-white/60 animate-ping pointer-events-none" />
+            <span className="absolute inset-0 rounded-l-xl border-2 border-white/60 animate-ping pointer-events-none" />
           )}
 
-          {/* Top: Cart Icon */}
-          <div className="relative">
+          {/* Top: Cart Icon with Count Badge on Top-Right */}
+          <div className="relative inline-flex items-center justify-center mt-0.5">
             <ShoppingBag className="w-5 h-5 text-white stroke-[1.9]" />
-          </div>
 
-          {/* Count Badge with bouncy entrance */}
-          <motion.span
-            key={`count-${cartCount}`}
-            initial={{ scale: 0.5, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 450, damping: 14 }}
-            className="mt-1.5 min-w-[22px] h-[20px] px-1.5 rounded-full bg-white text-[#9E596B] font-extrabold text-[11px] flex items-center justify-center shadow-md leading-none"
-          >
-            {cartCount}
-          </motion.span>
+            {/* Count Badge on the Cart Icon */}
+            <motion.span
+              key={`count-${cartCount}`}
+              initial={{ scale: 0.5, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 450, damping: 14 }}
+              className="absolute -top-1.5 -right-2 min-w-[17px] h-[17px] px-1 rounded-full bg-white text-[#9E596B] font-extrabold text-[10px] flex items-center justify-center shadow-md leading-none border border-[#9E596B]/20"
+            >
+              {cartCount}
+            </motion.span>
+          </div>
 
           {/* Divider */}
-          <div className="w-6 h-[1px] bg-white/30 my-2" />
+          <div className="w-5 h-[1px] bg-white/25 my-2" />
 
-          {/* Bottom: Total Amount in BDT */}
-          <div className="flex flex-col items-center text-center">
-            <span className="text-[9px] uppercase tracking-wider font-semibold text-white/75 leading-none">
-              Total
-            </span>
-            <motion.div
-              key={`total-${cartTotal}`}
-              initial={{ scale: 1.35, color: "#FFE873" }}
-              animate={{ scale: 1, color: "#FFFFFF" }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-              className="flex items-center gap-0.5 mt-1 font-mono text-xs sm:text-[13px] font-black text-white leading-none tracking-tight whitespace-nowrap"
-            >
-              <span className="text-[10px] text-white/80">৳</span>
-              <span>{cartTotal.toLocaleString("en-BD")}</span>
-            </motion.div>
-          </div>
+          {/* Bottom: Total Amount numbers only (no 'TOTAL' text) */}
+          <motion.div
+            key={`total-${cartTotal}`}
+            initial={{ scale: 1.25, color: "#FFE873" }}
+            animate={{ scale: 1, color: "#FFFFFF" }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="flex items-center gap-0.5 font-sans text-xs sm:text-[13px] font-bold text-white leading-none tracking-tight whitespace-nowrap"
+          >
+            <span className="text-[11px] font-medium text-white/85">৳</span>
+            <span>{cartTotal.toLocaleString("en-BD")}</span>
+          </motion.div>
         </motion.button>
       </motion.aside>
     </AnimatePresence>
