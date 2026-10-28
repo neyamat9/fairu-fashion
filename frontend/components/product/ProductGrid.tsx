@@ -273,7 +273,7 @@ export default function ProductGrid({
             {error}
           </p>
         )}
-        <div className="transition-opacity duration-200" style={{ opacity: loading ? 0.45 : 1 }} aria-busy={loading}>
+        <div className="transition-opacity duration-200 min-h-[600px]" style={{ opacity: loading ? 0.45 : 1 }} aria-busy={loading}>
           {products.length === 0 && !loading ? (
             <EmptyState hasFilters={hasActiveFilters} onClearFilters={handleClearAll} />
           ) : (

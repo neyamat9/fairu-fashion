@@ -68,6 +68,12 @@ export default function NavigationGate({ children }: { children: React.ReactNode
     const begin = (href: string) => {
       const here = window.location.pathname + window.location.search;
       if (href === here) return;
+      // If it's the exact same pathname (only query parameters changed, e.g. in-page filtering/subcategories),
+      // do not replace the page with a full-page skeleton or force a scroll jump to top.
+      const nextPath = href.split(/[?#]/)[0].replace(/\/+$/, "") || "/";
+      const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+      if (nextPath === currentPath) return;
+
       // (no scroll to the top here: the old page must not jump while it is still on screen — see the effect below)
       setPending({ href, fromAccount: isAccountPath(window.location.pathname), fromCheckout: isCheckoutPath(window.location.pathname) });
     };

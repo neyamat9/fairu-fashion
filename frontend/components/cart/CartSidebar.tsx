@@ -77,7 +77,7 @@ export default function CartSidebar() {
         onClick={closeCart}
         className={[
           "fixed inset-0 z-[2100] bg-brand-navy/60 backdrop-blur-sm transition-opacity duration-500",
-          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
+          isOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0 invisible",
         ].join(" ")}
       />
 
@@ -93,7 +93,7 @@ export default function CartSidebar() {
           "fixed right-0 top-0 z-[2110] flex h-full w-full max-w-[440px] flex-col",
           "border-l border-border bg-background shadow-2xl outline-none",
           "transition-transform duration-[550ms] ease-[cubic-bezier(0.22,1,0.36,1)]",
-          isOpen ? "translate-x-0" : "translate-x-full",
+          isOpen ? "translate-x-0" : "translate-x-full pointer-events-none invisible",
         ].join(" ")}
       >
         {/* Header */}

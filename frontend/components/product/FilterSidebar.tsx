@@ -206,12 +206,12 @@ export default function FilterSidebar({
     <>
       {/* ── Desktop sidebar ─────────────────────────── */}
       <aside
-        className="sticky hidden w-72 flex-shrink-0 self-start transition-[top] duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] lg:block"
-        style={{ top: "var(--sticky-top, 8rem)" }}
+        className="sticky hidden w-72 flex-shrink-0 self-start transition-[top] duration-300 ease-out lg:block overflow-hidden rounded"
+        style={{ top: "var(--sticky-top, 5.5rem)", contain: "paint" }}
       >
         <div
           data-lenis-prevent
-          className="no-scrollbar max-h-[calc(100vh-var(--sticky-top,8rem)-1rem)] overflow-y-auto overscroll-contain rounded border border-border bg-card"
+          className="no-scrollbar max-h-[calc(100vh-var(--sticky-top,5.5rem)-1rem)] overflow-y-auto overscroll-contain rounded border border-border bg-card"
         >
           {content}
         </div>
@@ -219,13 +219,15 @@ export default function FilterSidebar({
 
       {/* ── Mobile bottom drawer ─────────────────────── */}
       <div
-        className={`fixed inset-0 z-[2100] bg-brand-navy/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-[2100] bg-brand-navy/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+          mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0 invisible"
+        }`}
         onClick={onMobileClose}
         aria-hidden="true"
       />
       <div
         className={`fixed inset-x-0 bottom-0 z-[2110] flex max-h-[88dvh] flex-col rounded-t border-t border-border bg-card transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] lg:hidden ${
-          mobileOpen ? "translate-y-0" : "translate-y-full"
+          mobileOpen ? "translate-y-0" : "translate-y-full pointer-events-none invisible"
         }`}
         role="dialog"
         aria-modal="true"

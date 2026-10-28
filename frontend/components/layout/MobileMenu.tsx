@@ -118,7 +118,7 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
         aria-hidden="true"
         data-lenis-prevent
         onClick={onClose}
-        className={`fixed inset-0 z-[2100] bg-brand-navy/60 backdrop-blur-sm transition-opacity duration-300 ${open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-[2100] bg-brand-navy/60 backdrop-blur-sm transition-opacity duration-300 ${open ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0 invisible"}`}
       />
       <aside
         ref={panel}
@@ -128,7 +128,7 @@ export default function MobileMenu({ open, onClose }: { open: boolean; onClose: 
         aria-modal="true"
         aria-label="Menu"
         aria-hidden={!open}
-        className={`fixed right-0 top-0 z-[2110] flex h-full w-full max-w-[340px] flex-col border-l border-border bg-background outline-none transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-x-0 shadow-2xl" : "translate-x-full"}`}
+        className={`fixed right-0 top-0 z-[2110] flex h-full w-full max-w-[340px] flex-col border-l border-border bg-background outline-none transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${open ? "translate-x-0 shadow-2xl" : "translate-x-full pointer-events-none invisible"}`}
       >
         <div className="flex shrink-0 items-center justify-between bg-brand-navy px-5 py-4 text-white">
           <h2 className="font-outfit text-lg font-extrabold">Menu</h2>
