@@ -4,7 +4,8 @@ export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined) || 
 // The server's public base (for /uploads/... links that come back relative)
 export const ASSET_BASE = API_BASE.replace(/\/api\/?$/, "");
 
-const KEYS = { access: "gb_admin_access", refresh: "gb_admin_refresh", user: "gb_admin_user" } as const;
+const KEYS = { access: "fairu_admin_access", refresh: "fairu_admin_refresh", user: "fairu_admin_user" } as const;
+const OLD_KEYS = { access: "gb_admin_access", refresh: "gb_admin_refresh", user: "gb_admin_user" } as const;
 
 export interface AdminUser {
   id: string;
@@ -21,21 +22,35 @@ export interface AdminUser {
  *  - sessionStorage  → not ticked: gone when the browser (tab) closes
  * Reads look in the session first; writes go to wherever the session already is (so token refreshes stay put).
  */
-const HANDOFF = "gb_admin_handoff";
+const HANDOFF = "fairu_admin_handoff";
 const HANDOFF_MS = 20_000;
 
 const home = (): Storage => (sessionStorage.getItem(KEYS.access) ? sessionStorage : localStorage);
 
 export const tokens = {
   get access() {
-    return sessionStorage.getItem(KEYS.access) ?? localStorage.getItem(KEYS.access);
+    return (
+      sessionStorage.getItem(KEYS.access) ??
+      localStorage.getItem(KEYS.access) ??
+      sessionStorage.getItem(OLD_KEYS.access) ??
+      localStorage.getItem(OLD_KEYS.access)
+    );
   },
   get refresh() {
-    return sessionStorage.getItem(KEYS.refresh) ?? localStorage.getItem(KEYS.refresh);
+    return (
+      sessionStorage.getItem(KEYS.refresh) ??
+      localStorage.getItem(KEYS.refresh) ??
+      sessionStorage.getItem(OLD_KEYS.refresh) ??
+      localStorage.getItem(OLD_KEYS.refresh)
+    );
   },
   get user(): AdminUser | null {
     try {
-      const raw = sessionStorage.getItem(KEYS.user) ?? localStorage.getItem(KEYS.user);
+      const raw =
+        sessionStorage.getItem(KEYS.user) ??
+        localStorage.getItem(KEYS.user) ??
+        sessionStorage.getItem(OLD_KEYS.user) ??
+        localStorage.getItem(OLD_KEYS.user);
       return raw ? (JSON.parse(raw) as AdminUser) : null;
     } catch {
       return null;
@@ -49,8 +64,12 @@ export const tokens = {
     if (user) store.setItem(KEYS.user, JSON.stringify(user));
   },
   clear() {
-    for (const store of [localStorage, sessionStorage]) Object.values(KEYS).forEach((k) => store.removeItem(k));
+    for (const store of [localStorage, sessionStorage]) {
+      Object.values(KEYS).forEach((k) => store.removeItem(k));
+      Object.values(OLD_KEYS).forEach((k) => store.removeItem(k));
+    }
     localStorage.removeItem(HANDOFF);
+    localStorage.removeItem("gb_admin_handoff");
   },
   /** true when the login ends with the browser (Remember me not ticked) */
   get sessionOnly() {

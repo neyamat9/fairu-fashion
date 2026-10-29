@@ -361,6 +361,12 @@ ${itemsHtml}
       ? `${order.user.name} <${order.user.email}>`
       : `${order.guestName ?? order.shippingAddress?.fullName ?? 'Guest'} (guest)`;
     const phone = order.shippingAddress?.phone ?? order.guestPhone ?? '';
+    const adminBase = (
+      this.config.get<string>('frontend.adminUrl') ??
+      this.config.get<string>('frontend.url') ??
+      ''
+    ).replace(/\/$/, '');
+    const adminLink = `${adminBase}/orders/${order.id}`;
     const subject = `New order ${order.orderNumber} — ${formatMoney(order.total, site.currencySymbol)}`;
     const bodyHtml = `
 <h2 style="margin:0 0 12px;font-size:20px">New order received</h2>
@@ -369,14 +375,18 @@ ${itemsHtml}
 <p style="margin:0 0 4px">Phone: ${escapeHtml(phone)}</p>
 <p style="margin:0 0 4px">Payment: ${isMobileBanking(order.paymentMethod) ? `${PAYMENT_LABEL[order.paymentMethod]} (TrxID ${escapeHtml(order.bkashTransactionId ?? '-')}, from ${escapeHtml(order.bkashSenderNumber ?? '-')})` : 'Cash on Delivery'}</p>
 <p style="margin:0 0 12px">Delivery: ${escapeHtml(order.shippingAddress?.city ?? '')} (${escapeHtml(order.shippingZone ?? '')})</p>
-${this.itemsTable(order, site.currencySymbol)}`;
+${this.itemsTable(order, site.currencySymbol)}
+<div style="margin:20px 0 8px">
+  <a href="${adminLink}" style="display:inline-block;padding:10px 18px;background:#9E596B;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:600;font-size:13px">View Order in Dashboard</a>
+</div>`;
     await this.mail.send({
       to,
       subject,
       html: renderEmailLayout(site, { title: subject, bodyHtml }),
       text:
         `New order ${order.orderNumber}\nTotal: ${formatMoney(order.total, site.currencySymbol)}\nCustomer: ${customer}\nPhone: ${phone}\n` +
-        order.items.map((i) => `- ${i.productName} x${i.quantity}`).join('\n'),
+        order.items.map((i) => `- ${i.productName} x${i.quantity}`).join('\n') +
+        `\n\nView order in dashboard: ${adminLink}`,
     });
   }
 

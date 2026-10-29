@@ -80,7 +80,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
     getQuestions(product.id).catch(() => []),
     settingsPromise,
   ]);
-  const paymentMethods = settings.payment.methods.map((m) => (m === "BKASH" ? "bKash" : "Cash on Delivery"));
+  const PAYMENT_METHOD_NAMES: Record<string, string> = {
+    CASH_ON_DELIVERY: "Cash on Delivery",
+    BKASH: "bKash",
+    NAGAD: "Nagad",
+    ROCKET: "Rocket",
+  };
+  const paymentMethods = settings.payment.methods.map((m) => PAYMENT_METHOD_NAMES[m] ?? m);
 
   return (
     <ProductDetailClient

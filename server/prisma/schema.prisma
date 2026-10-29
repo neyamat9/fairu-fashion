@@ -238,7 +238,6 @@ model User {
   phoneVerifiedAt    DateTime?
 
   // Profile
-  dob         DateTime?
   gender      Gender?
   avatarUrl   String?
   bio         String?
@@ -839,7 +838,7 @@ model CompareItem {
 
 model Order {
   id String @id @default(uuid())
-  orderNumber String @unique // Human-readable order number (e.g., "RZ-20260512-0001")
+  orderNumber String @unique // Human-readable order number (e.g., "FF-20260512-0001")
 
   // Financials
   subtotal     Decimal @db.Decimal(12, 2)

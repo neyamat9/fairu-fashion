@@ -48,6 +48,15 @@ const FAQS = [
   },
 ];
 
+function formatBdPhone(phone: string): string {
+  const digits = phone.replace(/[^\d]/g, "");
+  const local = digits.startsWith("88") ? digits.slice(2) : digits;
+  if (local.length === 11) {
+    return `+880 ${local.slice(1, 5)}-${local.slice(5)}`;
+  }
+  return phone;
+}
+
 export default function ContactPage() {
   const { user } = useAuth();
   const [settings, setSettings] = useState<SiteSettings | null>(null);
@@ -111,10 +120,15 @@ export default function ContactPage() {
   const rawHotline = s?.hotline && !s.hotline.includes("1700-000000") ? s.hotline : "01620490985";
   const rawWhatsapp = s?.whatsapp && !s.whatsapp.includes("1700-000000") ? s.whatsapp : "01620490985";
   const email = s?.contactEmail || "neyamat7.ullah@gmail.com";
-  const hours = "Always Open (24/7)";
-  const displayPhone = "+880 1620-490985";
-  const cleanPhone = "+8801620490985";
-  const waFull = "8801620490985";
+  const hours = s?.businessHours || "Always Open (24/7)";
+  const displayPhone = formatBdPhone(rawHotline);
+  const displayWa = formatBdPhone(rawWhatsapp);
+  const cleanPhone = rawHotline.startsWith("+")
+    ? rawHotline
+    : `+88${rawHotline.replace(/[^\d]/g, "").replace(/^88/, "")}`;
+  const waFull = rawWhatsapp.replace(/[^\d]/g, "").startsWith("88")
+    ? rawWhatsapp.replace(/[^\d]/g, "")
+    : `88${rawWhatsapp.replace(/[^\d]/g, "")}`;
 
   return (
     <div className="bg-[#FAF7F5] dark:bg-[#141110] min-h-screen text-[#2E2825] dark:text-[#E8E2DE] selection:bg-[#9E596B]/20 selection:text-[#9E596B]">
@@ -159,7 +173,7 @@ export default function ContactPage() {
               </div>
               <h2 className="mt-4 font-outfit text-base font-bold text-foreground">WhatsApp Care</h2>
               <p className="mt-1 text-xs text-[#736862] dark:text-neutral-400">Direct styling & order chat (24/7)</p>
-              <p className="mt-2 text-sm font-extrabold text-foreground">{displayPhone}</p>
+              <p className="mt-2 text-sm font-extrabold text-foreground">{displayWa}</p>
             </div>
             <div className="mt-4 flex items-center gap-1 text-xs font-bold text-[#25D366] group-hover:gap-2 transition-all">
               <span>Start WhatsApp Chat</span>

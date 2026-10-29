@@ -46,7 +46,7 @@ export class User {
   phoneVerified: boolean;
 
   @Field(() => Date, { nullable: true })
-  dob?: Date | null;
+  dateOfBirth?: Date | null;
 
   @Field(() => Gender, { nullable: true })
   gender?: Gender | null;

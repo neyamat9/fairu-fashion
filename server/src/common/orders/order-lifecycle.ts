@@ -36,7 +36,7 @@ export async function nextTicketNumber(tx: Tx, now = new Date()) {
   return `TKT-${date}-${String(value).padStart(4, '0')}`;
 }
 
-// Returns the next order number for today, e.g. "RZ-20260512-0001".
+// Returns the next order number for today, e.g. "FF-20260512-0001".
 // The counter row is incremented with a single INSERT ... ON CONFLICT DO
 // UPDATE, which takes a row lock until the surrounding transaction ends, so
 // two concurrent orders can never read the same value. If the order
@@ -44,7 +44,7 @@ export async function nextTicketNumber(tx: Tx, now = new Date()) {
 export async function nextOrderNumber(tx: Tx, now = new Date()) {
   const date = bdDate(now);
   const value = await nextCounterValue(tx, date);
-  return `RZ-${date}-${String(value).padStart(4, '0')}`;
+  return `FF-${date}-${String(value).padStart(4, '0')}`;
 }
 
 // Moves an order to CANCELLED and undoes what placing it did: puts the stock

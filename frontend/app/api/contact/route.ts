@@ -67,7 +67,10 @@ export async function POST(req: Request) {
     const safeMessage = String(message).trim();
 
     // 3. Send email via Resend API
-    const emailSubject = `[Fairu Contact] [${safeTopic}] ${safeSubject}`;
+    const hasDistinctTopic = safeTopic && safeTopic !== safeSubject && safeTopic !== "General Inquiry";
+    const emailSubject = hasDistinctTopic
+      ? `[Fairu Contact] [${safeTopic}] ${safeSubject}`
+      : `[Fairu Contact] ${safeSubject}`;
     const emailHtml = `
       <!DOCTYPE html>
       <html>
@@ -185,7 +188,7 @@ ${escapeHtml(safeMessage)}
           name: safeName,
           email: safeEmail,
           phone: safePhone !== "Not provided" ? safePhone : undefined,
-          subject: `[${safeTopic}] ${safeSubject}`,
+          subject: hasDistinctTopic ? `[${safeTopic}] ${safeSubject}` : safeSubject,
           message: safeMessage,
         }),
       });

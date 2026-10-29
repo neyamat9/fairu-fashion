@@ -60,7 +60,7 @@ export class OrdersController {
   @ApiOperation({
     summary: 'Public order tracking by order number + phone (no login needed)',
   })
-  @ApiQuery({ name: 'orderNumber', example: 'RZ-20260512-0001' })
+  @ApiQuery({ name: 'orderNumber', example: 'FF-20260512-0001' })
   @ApiQuery({ name: 'phone', example: '01712345678' })
   async track(
     @Query('orderNumber') orderNumber: string,
@@ -80,7 +80,7 @@ export class OrdersController {
     summary:
       'Invoice by order number + phone (guests). format=html (default, printable) or json',
   })
-  @ApiQuery({ name: 'orderNumber', example: 'RZ-20260512-0001' })
+  @ApiQuery({ name: 'orderNumber', example: 'FF-20260512-0001' })
   @ApiQuery({ name: 'phone', example: '01712345678' })
   @ApiQuery({ name: 'format', required: false, enum: ['html', 'json'] })
   async guestInvoice(

@@ -57,7 +57,7 @@ function SiteForm({ v }: { v: S["site"] }) {
         </div>
       </Section>
       <Section title="Social links">
-        <div className="grid gap-3 sm:grid-cols-2">{["facebook", "instagram", "youtube", "tiktok", "twitter", "linkedin"].map((k) => <Field key={k} label={k[0].toUpperCase() + k.slice(1)}><Input value={social[k] ?? ""} onChange={(e) => setSocial({ ...social, [k]: e.target.value })} placeholder="https://" /></Field>)}</div>
+        <div className="grid gap-3 sm:grid-cols-2">{["facebook", "instagram", "youtube", "tiktok", "twitter", "linkedin", "whatsapp"].map((k) => <Field key={k} label={k[0].toUpperCase() + k.slice(1)}><Input value={social[k] ?? ""} onChange={(e) => setSocial({ ...social, [k]: e.target.value })} placeholder={k === "whatsapp" ? "https://wa.me/880..." : "https://"} /></Field>)}</div>
       </Section>
       <Section title="Search engines">
         <div className="space-y-3"><Field label="Meta title"><Input value={f.metaTitle} onChange={(e) => setF({ ...f, metaTitle: e.target.value })} /></Field><Field label="Meta description"><Textarea rows={2} value={f.metaDescription} onChange={(e) => setF({ ...f, metaDescription: e.target.value })} /></Field></div>

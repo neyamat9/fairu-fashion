@@ -12,7 +12,7 @@ import {
 import { IsBdMobile } from '../../../common/utils/phone';
 
 export class ClaimOrderDto {
-  @ApiProperty({ example: 'RZ-20261002-0007' })
+  @ApiProperty({ example: 'FF-20261002-0007' })
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? value.trim().toUpperCase() : value,
   )

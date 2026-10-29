@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -564,12 +565,15 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
                               onClick={() => handleSelectProduct(product)}
                               className="flex items-center gap-3 p-2.5 rounded-lg text-left hover:bg-muted/50 dark:hover:bg-muted/20 transition-colors group cursor-pointer"
                             >
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={primaryImg}
-                                alt={product.name}
-                                className="w-12 h-14 rounded object-cover bg-muted shrink-0"
-                              />
+                              <div className="relative w-12 h-14 rounded overflow-hidden bg-muted shrink-0">
+                                <Image
+                                  src={primaryImg}
+                                  alt={product.name}
+                                  fill
+                                  sizes="48px"
+                                  className="object-cover"
+                                />
+                              </div>
                               <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-semibold text-foreground group-hover:text-[#9E596B] transition-colors">
                                   {product.name}

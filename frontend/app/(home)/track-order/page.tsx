@@ -14,8 +14,8 @@ const input = "w-full rounded border border-border bg-muted px-4 py-3 text-sm te
 function Tracker() {
   const params = useSearchParams();
   const { user } = useAuth();
-  const [number, setNumber] = useState(params.get("n") ?? "");
-  const [phone, setPhone] = useState(params.get("p") ?? "");
+  const [number, setNumber] = useState(params.get("n") ?? params.get("orderNumber") ?? "");
+  const [phone, setPhone] = useState(params.get("p") ?? params.get("phone") ?? "");
   const [order, setOrder] = useState<TrackedOrder | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,8 +34,8 @@ function Tracker() {
   }
 
   useEffect(() => {
-    const n = params.get("n");
-    const p = params.get("p");
+    const n = params.get("n") ?? params.get("orderNumber");
+    const p = params.get("p") ?? params.get("phone");
     if (n && p) void lookup(n, p);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -59,7 +59,7 @@ function Tracker() {
         <form onSubmit={(e) => { e.preventDefault(); void lookup(); }} className="mt-8 grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
           <div>
             <label htmlFor="n" className="sr-only">Order number</label>
-            <input id="n" required value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Order number, e.g. GB-20260101-0001" className={input} />
+            <input id="n" required value={number} onChange={(e) => setNumber(e.target.value)} placeholder="Order number, e.g. FF-20260101-0001" className={input} />
           </div>
           <div>
             <label htmlFor="p" className="sr-only">Phone</label>
