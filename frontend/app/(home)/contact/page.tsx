@@ -11,9 +11,7 @@ import {
   MessageSquare,
   Phone,
   Mail,
-  MapPin,
   Clock,
-  Sparkles,
   Send,
   CheckCircle2,
   User,
@@ -22,17 +20,8 @@ import {
   ShieldCheck,
   Truck,
   RotateCcw,
-  Headphones,
   Tag,
 } from "lucide-react";
-
-const TOPICS = [
-  { id: "Order Inquiry", label: "Order & Tracking", icon: Truck },
-  { id: "Sizing & Fit", label: "Sizing & Fit Advice", icon: Sparkles },
-  { id: "Product Details", label: "Product & Fabric", icon: Tag },
-  { id: "Custom Request", label: "Custom / Bridal Request", icon: Headphones },
-  { id: "General Feedback", label: "General Feedback", icon: MessageSquare },
-] as const;
 
 const FAQS = [
   {
@@ -62,7 +51,6 @@ const FAQS = [
 export default function ContactPage() {
   const { user } = useAuth();
   const [settings, setSettings] = useState<SiteSettings | null>(null);
-  const [topic, setTopic] = useState<(typeof TOPICS)[number]["id"]>("Order Inquiry");
   const [f, setF] = useState({
     name: "",
     email: "",
@@ -106,7 +94,7 @@ export default function ContactPage() {
     try {
       await sendContactMessage({
         ...f,
-        topic,
+        topic: f.subject.trim() || "General Inquiry",
         phone: f.phone.replace(/[\s-]/g, "") || undefined,
         website: f.website || undefined,
       });
@@ -120,14 +108,13 @@ export default function ContactPage() {
   }
 
   const s = settings?.site;
-  const hotline = s?.hotline || "01620490985";
-  const whatsapp = s?.whatsapp || "01620490985";
+  const rawHotline = s?.hotline && !s.hotline.includes("1700-000000") ? s.hotline : "01620490985";
+  const rawWhatsapp = s?.whatsapp && !s.whatsapp.includes("1700-000000") ? s.whatsapp : "01620490985";
   const email = s?.contactEmail || "neyamat7.ullah@gmail.com";
-  const hours = s?.businessHours || "Always Open (24/7)";
-  const address = s?.address || "Dhaka, Bangladesh";
-  const cleanPhone = hotline.replace(/[^\d+]/g, "");
-  const cleanWa = whatsapp.replace(/[^\d]/g, "");
-  const waFull = cleanWa.startsWith("88") ? cleanWa : (cleanWa.startsWith("0") ? `88${cleanWa}` : `880${cleanWa}`);
+  const hours = "Always Open (24/7)";
+  const displayPhone = "+880 1620-490985";
+  const cleanPhone = "+8801620490985";
+  const waFull = "8801620490985";
 
   return (
     <div className="bg-[#FAF7F5] dark:bg-[#141110] min-h-screen text-[#2E2825] dark:text-[#E8E2DE] selection:bg-[#9E596B]/20 selection:text-[#9E596B]">
@@ -139,12 +126,7 @@ export default function ContactPage() {
         <div className="pointer-events-none absolute -right-20 -bottom-20 h-80 w-80 rounded-full bg-[#D4AF37]/5 blur-3xl" />
 
         <div className="mx-auto max-w-5xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[#EBD8DE] dark:border-[#382B30] bg-[#FDF5F7] dark:bg-[#251A1E] px-4 py-1.5 text-xs font-bold uppercase tracking-[0.25em] text-[#9E596B] shadow-sm">
-            <Sparkles className="h-3.5 w-3.5" />
-            <span>Fairu Concierge & Customer Care</span>
-          </div>
-
-          <h1 className="mt-5 font-outfit text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-foreground">
+          <h1 className="font-outfit text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl text-foreground">
             We’re Here to <span className="text-[#9E596B]">Assist You</span>
           </h1>
 
@@ -154,9 +136,9 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* 2. FOUR QUICK ACTION CHANNEL CARDS */}
+      {/* 2. THREE QUICK ACTION CHANNEL CARDS */}
       <section className="mx-auto max-w-6xl px-4 -mt-8 sm:-mt-10 md:px-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           
           {/* WhatsApp Card */}
           <a
@@ -176,8 +158,8 @@ export default function ContactPage() {
                 </span>
               </div>
               <h2 className="mt-4 font-outfit text-base font-bold text-foreground">WhatsApp Care</h2>
-              <p className="mt-1 text-xs text-[#736862] dark:text-neutral-400">Direct styling & order chat</p>
-              <p className="mt-2 text-sm font-extrabold text-foreground">{whatsapp}</p>
+              <p className="mt-1 text-xs text-[#736862] dark:text-neutral-400">Direct styling & order chat (24/7)</p>
+              <p className="mt-2 text-sm font-extrabold text-foreground">{displayPhone}</p>
             </div>
             <div className="mt-4 flex items-center gap-1 text-xs font-bold text-[#25D366] group-hover:gap-2 transition-all">
               <span>Start WhatsApp Chat</span>
@@ -195,13 +177,14 @@ export default function ContactPage() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#9E596B]/10 text-[#9E596B] transition-transform group-hover:scale-110">
                   <Phone className="h-6 w-6" />
                 </div>
-                <span className="rounded-full bg-[#9E596B]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#9E596B]">
+                <span className="flex items-center gap-1.5 rounded-full bg-[#9E596B]/10 px-2.5 py-0.5 text-[11px] font-semibold text-[#9E596B]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#9E596B] animate-pulse" />
                   {hours}
                 </span>
               </div>
               <h2 className="mt-4 font-outfit text-base font-bold text-foreground">Direct Hotline</h2>
-              <p className="mt-1 text-xs text-[#736862] dark:text-neutral-400">Speak to our concierge</p>
-              <p className="mt-2 text-sm font-extrabold text-foreground">{hotline}</p>
+              <p className="mt-1 text-xs text-[#736862] dark:text-neutral-400">Speak directly with our concierge</p>
+              <p className="mt-2 text-sm font-extrabold text-foreground">{displayPhone}</p>
             </div>
             <div className="mt-4 flex items-center gap-1 text-xs font-bold text-[#9E596B] group-hover:gap-2 transition-all">
               <span>Call Direct Line</span>
@@ -232,27 +215,6 @@ export default function ContactPage() {
               <ArrowRight className="h-3.5 w-3.5" />
             </div>
           </a>
-
-          {/* Location & Hub Card */}
-          <div className="flex flex-col justify-between rounded-2xl border border-[#EBE4DF] dark:border-[#2E2825] bg-white dark:bg-[#1E1A18] p-5 sm:p-6 shadow-sm">
-            <div>
-              <div className="flex items-center justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                  <MapPin className="h-6 w-6" />
-                </div>
-                <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
-                  64 Districts
-                </span>
-              </div>
-              <h2 className="mt-4 font-outfit text-base font-bold text-foreground">Dhaka Hub</h2>
-              <p className="mt-1 text-xs text-[#736862] dark:text-neutral-400">Doorstep delivery hub</p>
-              <p className="mt-2 text-xs font-extrabold text-foreground">{address}</p>
-            </div>
-            <div className="mt-4 flex items-center gap-1 text-xs font-bold text-amber-600 dark:text-amber-400">
-              <Truck className="h-3.5 w-3.5" />
-              <span>Nationwide Express</span>
-            </div>
-          </div>
 
         </div>
       </section>
@@ -287,7 +249,7 @@ export default function ContactPage() {
 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <a
-                    href={`https://wa.me/${waFull}?text=${encodeURIComponent(`Hi Fairu Fashion, I submitted a contact inquiry regarding "${f.subject || topic}".`)}`}
+                    href={`https://wa.me/${waFull}?text=${encodeURIComponent(`Hi Fairu Fashion, I submitted a contact inquiry regarding "${f.subject || "Order & Sizing Inquiry"}".`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#25D366] px-6 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:bg-[#20ba59] transition-all"
@@ -312,34 +274,6 @@ export default function ContactPage() {
               /* FORM FIELDS */
               <form onSubmit={submit} noValidate className="mt-8 space-y-6">
                 
-                {/* Topic Selection Pills */}
-                <div>
-                  <label className="mb-2.5 block text-xs font-bold uppercase tracking-wider text-[#736862] dark:text-neutral-400">
-                    What can we help you with?
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {TOPICS.map((t) => {
-                      const Icon = t.icon;
-                      const active = topic === t.id;
-                      return (
-                        <button
-                          key={t.id}
-                          type="button"
-                          onClick={() => setTopic(t.id)}
-                          className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all cursor-pointer ${
-                            active
-                              ? "bg-[#9E596B] text-white shadow-sm ring-2 ring-[#9E596B]/30"
-                              : "bg-[#F7F3F0] dark:bg-[#25201E] border border-[#EBE4DF] dark:border-[#332A26] text-[#4A423D] dark:text-neutral-300 hover:border-[#9E596B]/40 hover:bg-[#FAF6F4]"
-                          }`}
-                        >
-                          <Icon className="h-3.5 w-3.5" />
-                          <span>{t.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
                 {/* Name & Email Row */}
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
