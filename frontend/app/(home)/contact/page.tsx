@@ -202,8 +202,9 @@ export default function ContactPage() {
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#9E596B]/10 text-[#9E596B] transition-transform group-hover:scale-110">
                   <Mail className="h-6 w-6" />
                 </div>
-                <span className="text-[11px] font-semibold text-muted-foreground">
-                  Replies in 2–4 hrs
+                <span className="flex items-center gap-1.5 rounded-full bg-blue-500/10 px-2.5 py-0.5 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                  Replies in 5 mins
                 </span>
               </div>
               <h2 className="mt-4 font-outfit text-base font-bold text-foreground">Email Inquiries</h2>
@@ -396,7 +397,7 @@ export default function ContactPage() {
                 {/* Submit Button */}
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
                   <p className="text-xs text-[#736862] dark:text-neutral-400 text-center sm:text-left">
-                    We typically answer via email or phone within a few hours.
+                    We typically reply via email or phone within 5 minutes.
                   </p>
 
                   <button
