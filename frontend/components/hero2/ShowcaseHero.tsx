@@ -21,6 +21,7 @@ export const ShowcaseHero: React.FC<ShowcaseHeroProps> = ({ settings }) => {
         "/hero/hero-slide-3.webp",
       ];
   
+  const badge = site?.heroBadge;
   const titleMain = site?.heroTitle || "Exclusive";
   const titleHighlight = site?.heroHighlight || "Women's Fashion";
   const description = site?.heroDescription || "Discover our exclusive collection of women's three piece, two piece, and ready-to-wear outfits crafted for everyday grace and celebrations.";
@@ -81,6 +82,18 @@ export const ShowcaseHero: React.FC<ShowcaseHeroProps> = ({ settings }) => {
           
           {/* LEFT COLUMN: Wall Typography */}
           <div className="lg:col-span-7 xl:col-span-6 z-20 flex flex-col justify-center pt-2 sm:pt-4 lg:pt-0 max-w-[620px]">
+            {/* Optional Subtitle / Badge */}
+            {badge && (
+              <motion.span
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                className="inline-block text-[11px] sm:text-[12px] font-bold tracking-[0.25em] uppercase text-[#9E596B] mb-2 sm:mb-3"
+              >
+                {badge}
+              </motion.span>
+            )}
+
             {/* Display Headline written seamlessly on the textured wall */}
             <h1 className="font-serif text-[42px] sm:text-[56px] lg:text-[66px] xl:text-[74px] leading-[1.08] text-[#221B19] tracking-[-0.02em] mb-5 sm:mb-6">
               {/* Line 1: Exclusive */}
