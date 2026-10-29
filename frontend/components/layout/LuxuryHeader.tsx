@@ -24,6 +24,7 @@ import { useDebouncedSearch } from "@/lib/hooks/use-debounced-search";
 import { useSearchHistory } from "@/lib/hooks/use-search-history";
 import { searchProducts } from "@/lib/services/products.service";
 import type { Category, Product } from "@/lib/types";
+import { isHomePage } from "@/lib/utils";
 
 interface LuxuryHeaderProps {
   categories?: Category[];
@@ -40,7 +41,8 @@ const DEFAULT_CATEGORIES: { slug: string; name: string; description?: string }[]
 export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [mountedPath, setMountedPath] = useState<string | null>(null);
+
+  const isHome = isHomePage(pathname);
 
   const displayCategories = categories && categories.length > 0 ? categories : DEFAULT_CATEGORIES;
 
@@ -60,18 +62,12 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
     }, 180);
   };
 
+  // Prevent browser from restoring a stale scroll position on refresh/load
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setMountedPath(window.location.pathname);
+    if (typeof window !== "undefined" && "scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
     }
-  }, [pathname]);
-
-  const activePath = mountedPath ?? pathname;
-  const isHome =
-    !activePath ||
-    activePath === "/" ||
-    activePath === "" ||
-    activePath.split(/[?#]/)[0].replace(/\/+$/, "") === "";
+  }, []);
 
   const { cartCount, openCart } = useCart();
   const { isAuthenticated } = useAuth();
@@ -159,11 +155,18 @@ export default function LuxuryHeader({ categories = [] }: LuxuryHeaderProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [searchOpen, mobileMenuOpen]);
 
-  // Close search and collections dropdown on route change
+  // Close search and collections dropdown on route change & sync scroll state for homepage
   useEffect(() => {
     setSearchOpen(false);
     setCollectionsOpen(false);
-  }, [pathname]);
+    if (typeof window !== "undefined") {
+      lastScrollY.current = window.scrollY;
+      if (isHome && window.scrollY <= 40) {
+        setScrolled(false);
+        setVisible(true);
+      }
+    }
+  }, [pathname, isHome]);
 
   // Close collections dropdown on click outside or Esc
   useEffect(() => {

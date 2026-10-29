@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, MOTION_OK } from "./gsap";
 import { scrollTopNow } from "./scroll-top";
+import { isHomePage } from "@/lib/utils";
 
 /**
  * Buttery smooth scrolling (Lenis) driven by GSAP's ticker so ScrollTrigger
@@ -31,6 +32,11 @@ function ScrollToTopOnNavigate() {
   useEffect(() => {
     if (first.current) {
       first.current = false;
+      // On initial load of the homepage, ensure scroll is at the top (0, 0)
+      // so browser scroll restoration doesn't leave the hero halfway scrolled down
+      if (isHomePage(path) && typeof window !== "undefined" && window.scrollY > 0) {
+        scrollTopNow();
+      }
       return;
     }
     if (popped.current) {
