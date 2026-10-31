@@ -7,6 +7,12 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Prisma, Upload, UploadPurpose } from '@prisma/client';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+  CopyObjectCommand,
+} from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
@@ -69,6 +75,9 @@ export class UploadsService implements OnModuleInit, OnModuleDestroy {
   private readonly publicBase: string;
   private readonly cleanupIntervalMs: number;
   private readonly unattachedTtlMs: number;
+  private readonly s3Client?: S3Client;
+  private readonly r2Bucket?: string;
+  private readonly r2PublicUrl?: string;
   private timer?: NodeJS.Timeout;
 
   constructor(
@@ -81,6 +90,34 @@ export class UploadsService implements OnModuleInit, OnModuleDestroy {
       config.get<number>('uploads.cleanupIntervalMs') ?? 60 * 60 * 1000;
     this.unattachedTtlMs =
       config.get<number>('uploads.unattachedTtlMs') ?? 24 * 60 * 60 * 1000;
+
+    const r2AccessKey = config.get<string>('r2.accessKeyId');
+    const r2SecretKey = config.get<string>('r2.secretAccessKey');
+    const r2Endpoint = config.get<string>('r2.endpoint');
+    const r2Bucket = config.get<string>('r2.bucketName');
+    const r2PublicUrl = config.get<string>('r2.publicUrl');
+
+    if (r2AccessKey && r2SecretKey && r2Endpoint && r2Bucket && r2PublicUrl) {
+      this.s3Client = new S3Client({
+        region: 'auto',
+        endpoint: r2Endpoint,
+        credentials: {
+          accessKeyId: r2AccessKey,
+          secretAccessKey: r2SecretKey,
+        },
+      });
+      this.r2Bucket = r2Bucket;
+      this.r2PublicUrl = r2PublicUrl.replace(/\/$/, '');
+      this.logger.log(
+        `Initialized Cloudflare R2 storage for bucket "${this.r2Bucket}" (Public URL: ${this.r2PublicUrl})`,
+      );
+    } else {
+      this.logger.log('Cloudflare R2 not configured; falling back to local disk storage');
+    }
+  }
+
+  isR2(): boolean {
+    return !!(this.s3Client && this.r2Bucket && this.r2PublicUrl);
   }
 
   onModuleInit() {
@@ -95,7 +132,12 @@ export class UploadsService implements OnModuleInit, OnModuleDestroy {
   }
 
   url(key: string) {
-    return `${this.publicBase}/uploads/${key}`;
+    if (/^https?:\/\//i.test(key)) return key;
+    const cleanKey = key.replace(/^\/+/, '');
+    if (this.isR2()) {
+      return `${this.r2PublicUrl}/${cleanKey}`;
+    }
+    return `${this.publicBase}/uploads/${cleanKey}`;
   }
 
   thumbUrl(key: string) {
@@ -171,8 +213,8 @@ export class UploadsService implements OnModuleInit, OnModuleDestroy {
 
     const id = randomUUID();
     const key = `${folderFor(purpose, folder)}/${id}.webp`;
-    await this.writeFile(key, full.data);
-    await this.writeFile(thumbKey(key), thumb);
+    await this.writeBytes(key, full.data, 'image/webp');
+    await this.writeBytes(thumbKey(key), thumb, 'image/webp');
 
     try {
       const row = await this.prisma.upload.create({
@@ -239,16 +281,46 @@ export class UploadsService implements OnModuleInit, OnModuleDestroy {
 
   // Removes stored files (best effort — a missing file is not an error).
   async removeFiles(keys: string[]) {
+    const allKeys = keys.flatMap((key) => [key, thumbKey(key)]);
+
+    // 1. Delete from Cloudflare R2 if configured
+    if (this.isR2()) {
+      await Promise.all(
+        allKeys.map(async (k) => {
+          const rawKey =
+            this.r2PublicUrl && k.startsWith(this.r2PublicUrl)
+              ? k.slice(this.r2PublicUrl.length).replace(/^\/+/, '')
+              : k.replace(/^\/+/, '');
+          return this.s3Client!
+            .send(
+              new DeleteObjectCommand({
+                Bucket: this.r2Bucket!,
+                Key: rawKey,
+              }),
+            )
+            .catch((e) => {
+              this.logger.warn(
+                `Could not delete R2 object ${rawKey}: ${e instanceof Error ? e.message : String(e)}`,
+              );
+            });
+        }),
+      );
+    }
+
+    // 2. Also remove from local disk (if it was stored locally or during fallback)
     await Promise.all(
-      keys.flatMap((key) =>
-        [key, thumbKey(key)].map((k) =>
-          fs.unlink(this.pathFor(k)).catch((e: NodeJS.ErrnoException) => {
-            if (e.code !== 'ENOENT') {
-              this.logger.warn(`Could not delete ${k}: ${e.message}`);
-            }
-          }),
-        ),
-      ),
+      allKeys.map(async (k) => {
+        try {
+          const rawKey = k
+            .replace(/^https?:\/\/[^/]+\//i, '')
+            .replace(/^uploads\//i, '')
+            .replace(/^\/+/, '');
+          const localPath = this.pathFor(rawKey);
+          await fs.unlink(localPath);
+        } catch {
+          // Missing local file is not an error
+        }
+      }),
     );
   }
 
@@ -257,11 +329,58 @@ export class UploadsService implements OnModuleInit, OnModuleDestroy {
   async duplicate(upload: Upload, userId: string): Promise<Upload> {
     const id = randomUUID();
     const key = upload.key.replace(/[^/]+\.webp$/, `${id}.webp`);
-    await fs.mkdir(path.dirname(this.pathFor(key)), { recursive: true });
-    await fs.copyFile(this.pathFor(upload.key), this.pathFor(key));
-    await fs
-      .copyFile(this.pathFor(thumbKey(upload.key)), this.pathFor(thumbKey(key)))
-      .catch(() => undefined);
+
+    if (this.isR2()) {
+      let copiedOnR2 = false;
+      try {
+        await this.s3Client!.send(
+          new CopyObjectCommand({
+            Bucket: this.r2Bucket!,
+            CopySource: `${this.r2Bucket}/${upload.key}`,
+            Key: key,
+            ContentType: 'image/webp',
+            CacheControl: 'public, max-age=31536000, immutable',
+          }),
+        );
+        copiedOnR2 = true;
+        await this.s3Client!
+          .send(
+            new CopyObjectCommand({
+              Bucket: this.r2Bucket!,
+              CopySource: `${this.r2Bucket}/${thumbKey(upload.key)}`,
+              Key: thumbKey(key),
+              ContentType: 'image/webp',
+              CacheControl: 'public, max-age=31536000, immutable',
+            }),
+          )
+          .catch(() => undefined);
+      } catch {
+        // If not found in R2, check local disk fallback
+        try {
+          const localData = await fs.readFile(this.pathFor(upload.key));
+          await this.writeBytes(key, localData, 'image/webp');
+          const thumbData = await fs
+            .readFile(this.pathFor(thumbKey(upload.key)))
+            .catch(() => null);
+          if (thumbData) {
+            await this.writeBytes(thumbKey(key), thumbData, 'image/webp');
+          }
+          copiedOnR2 = true;
+        } catch {
+          // ignore
+        }
+      }
+      if (!copiedOnR2) {
+        throw new Error(`Failed to copy image "${upload.key}" on storage`);
+      }
+    } else {
+      await fs.mkdir(path.dirname(this.pathFor(key)), { recursive: true });
+      await fs.copyFile(this.pathFor(upload.key), this.pathFor(key));
+      await fs
+        .copyFile(this.pathFor(thumbKey(upload.key)), this.pathFor(thumbKey(key)))
+        .catch(() => undefined);
+    }
+
     try {
       return await this.prisma.upload.create({
         data: {
@@ -337,6 +456,26 @@ export class UploadsService implements OnModuleInit, OnModuleDestroy {
       throw new BadRequestException(
         'Daily upload limit reached. Please try again tomorrow.',
       );
+    }
+  }
+
+  private async writeBytes(
+    key: string,
+    data: Buffer,
+    contentType = 'image/webp',
+  ) {
+    if (this.isR2()) {
+      await this.s3Client!.send(
+        new PutObjectCommand({
+          Bucket: this.r2Bucket!,
+          Key: key,
+          Body: data,
+          ContentType: contentType,
+          CacheControl: 'public, max-age=31536000, immutable',
+        }),
+      );
+    } else {
+      await this.writeFile(key, data);
     }
   }
 

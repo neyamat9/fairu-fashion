@@ -58,6 +58,7 @@ async function bootstrap() {
             `'self'`,
             'data:',
             'apollo-server-landing-page.cdn.apollographql.com',
+            'https://*.r2.dev',
           ],
           scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
           manifestSrc: [

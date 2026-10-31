@@ -27,6 +27,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "**.amazonaws.com" },
       { protocol: "https", hostname: "**.cloudinary.com" },
+      { protocol: "https", hostname: "**.r2.dev" },
+      { protocol: "https", hostname: "pub-69487237adb14138ab8320f361f7d354.r2.dev" },
     ],
   },
 };
