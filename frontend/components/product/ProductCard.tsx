@@ -30,6 +30,28 @@ function formatBDT(price: number): string {
   return `৳${price.toLocaleString("en-BD")}`;
 }
 
+function isOnlyFreeSize(variants: ProductVariant[]): boolean {
+  if (variants.length <= 1) return true;
+  const labels = variants.map((v) => v.label.trim().toLowerCase());
+  const uniqueLabels = new Set(labels);
+  if (uniqueLabels.size <= 1) return true;
+
+  const freePatterns = [
+    "free size",
+    "free-size",
+    "freesize",
+    "one size",
+    "onesize",
+    "unstitched",
+    "semi-stitched",
+    "standard",
+    "regular",
+  ];
+  return Array.from(uniqueLabels).every((label) =>
+    freePatterns.some((pattern) => label === pattern || label.includes("free size") || label.includes("unstitched"))
+  );
+}
+
 const BADGE_STYLES: Record<string, string> = {
   NEW: "bg-primary text-primary-foreground",
   HOT: "bg-brand-orange text-on-orange",
@@ -48,6 +70,7 @@ export default function ProductCard({
   const { addToCart } = useCartActions();
   // option picker for products with colours / sizes (so the customer never leaves the card)
   const [picker, setPicker] = useState<{ loading: boolean; variants: ProductVariant[] } | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
   const { addToVault, removeFromVault, isInVault } = useWishlist();
   const router = useRouter();
   // start loading the product page as soon as the pointer is over the card, so the click opens it at once
@@ -67,26 +90,72 @@ export default function ProductCard({
   async function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
     e.stopPropagation();
-    if (outOfStock) return;
+    if (outOfStock || isAdding) return;
     playClick();
-    if (!product.hasVariants) {
-      void quickAdd({ id: product.id, slug: product.slug, name: product.name, price: product.price, stock: product.stock, imageUrl: primaryImage?.url ?? "" });
+
+    // 1. If variants are already pre-loaded on this product card:
+    if (product.variants && product.variants.length > 0) {
+      if (product.variants.length === 1 || isOnlyFreeSize(product.variants)) {
+        const target = product.variants.find((v) => v.stock > 0) ?? product.variants[0];
+        void addVariant(target);
+        return;
+      }
+      setPicker({ loading: false, variants: product.variants });
       return;
     }
-    // has options: show them right here instead of leaving the page
-    setPicker({ loading: true, variants: [] });
+
+    // 2. If product has no multiple variants (single option or no variants):
+    if (!product.hasVariants) {
+      setIsAdding(true);
+      try {
+        await quickAdd({
+          id: product.id,
+          slug: product.slug,
+          name: product.name,
+          price: product.price,
+          stock: product.stock,
+          imageUrl: primaryImage?.url ?? "",
+        });
+      } finally {
+        setIsAdding(false);
+      }
+      return;
+    }
+
+    // 3. Product reports multiple variants: fetch details first without popping open an empty picker
+    setIsAdding(true);
     try {
       const full = await getProductBySlug(product.slug);
       const variants = full?.variants ?? [];
+
       if (variants.length === 0) {
         setPicker(null);
-        void quickAdd({ id: product.id, slug: product.slug, name: product.name, price: product.price, stock: product.stock, imageUrl: primaryImage?.url ?? "" });
-      } else {
-        setPicker({ loading: false, variants });
+        await quickAdd({
+          id: product.id,
+          slug: product.slug,
+          name: product.name,
+          price: product.price,
+          stock: product.stock,
+          imageUrl: primaryImage?.url ?? "",
+        });
+        return;
       }
+
+      // If single variant or all variants are "Free Size" / unstitched three-piece:
+      if (variants.length === 1 || isOnlyFreeSize(variants)) {
+        setPicker(null);
+        const target = variants.find((v) => v.stock > 0) ?? variants[0];
+        await addVariant(target);
+        return;
+      }
+
+      // 2 or more distinct options (e.g. sizes 52/54/56, colors)
+      setPicker({ loading: false, variants });
     } catch {
       setPicker(null);
       toast.error("Couldn't load the options. Please try again.");
+    } finally {
+      setIsAdding(false);
     }
   }
 
@@ -273,12 +342,16 @@ export default function ProductCard({
           <button
             type="button"
             onClick={handleAddToCart}
-            disabled={outOfStock}
+            disabled={outOfStock || isAdding}
             aria-label={outOfStock ? `${product.name} is out of stock` : `Add ${product.name} to cart`}
             title={outOfStock ? "Out of stock" : "Add to cart"}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-primary text-primary-foreground transition-all sm:h-10 sm:w-10 hover:bg-brand-orange hover:text-on-orange active:scale-90 disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground disabled:opacity-60 disabled:hover:bg-muted disabled:hover:text-muted-foreground"
           >
-            <ShoppingCart className="h-[18px] w-[18px]" aria-hidden="true" />
+            {isAdding ? (
+              <Loader2 className="h-[18px] w-[18px] animate-spin" aria-hidden="true" />
+            ) : (
+              <ShoppingCart className="h-[18px] w-[18px]" aria-hidden="true" />
+            )}
           </button>
         </div>
       </div>

@@ -40,6 +40,18 @@ describe("mapProduct", () => {
     expect(p.variants[1].price).toBe(950);
     expect(p.description).toBe("Hello\nWorld");
   });
+
+  it("treats single variant or Free Size three-piece dress as having no variant picker", () => {
+    const p = mapProduct({
+      ...card,
+      sellingPrice: "999",
+      regularPrice: "1200",
+      variants: [
+        { id: "v-fs", name: "Free Size", sku: "FS", price: "999", stock: 10, attribute1Name: "Size", attribute1Value: "Free Size" },
+      ],
+    });
+    expect(p.hasVariants).toBe(false);
+  });
 });
 
 describe("mapOrder", () => {

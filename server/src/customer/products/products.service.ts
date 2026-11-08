@@ -81,7 +81,7 @@ export function toCard(p: CardRow) {
     isFeatured: p.isFeatured,
     isBestSeller: p.isBestSeller,
     freeShipping: p.freeShipping,
-    hasVariants: p._count.variants > 0,
+    hasVariants: p._count.variants > 1,
     brand: p.brand,
     category: p.category,
     image: p.images[0]?.url ?? null,

@@ -84,6 +84,17 @@ const plain = (v: unknown) =>
     .replace(/\n{3,}/g, '\n\n')
     .trim();
 
+function checkHasProductVariants(variants: Raw[] | undefined): boolean {
+  if (!variants || variants.length <= 1) return false;
+  const labels = new Set(variants.map((v) => (v.name ?? v.label ?? '').trim().toLowerCase()));
+  if (labels.size <= 1) return false;
+  const freePatterns = ['free size', 'free-size', 'freesize', 'one size', 'unstitched', 'semi-stitched', 'standard'];
+  const allFree = Array.from(labels).every((l) =>
+    freePatterns.some((p) => l === p || l.includes('free size') || l.includes('unstitched')),
+  );
+  return !allFree;
+}
+
 // Full product (detail page, product lists) — also accepts the slim "card" shape.
 export function mapProduct(p: Raw): Product {
   const isCard = p.sellingPrice === undefined;
@@ -146,7 +157,7 @@ export function mapProduct(p: Raw): Product {
     createdAt: p.createdAt ?? new Date().toISOString(),
     // extras the API gives us
     ...({
-      hasVariants: isCard ? !!p.hasVariants : (p.variants ?? []).length > 0,
+      hasVariants: isCard ? !!p.hasVariants : checkHasProductVariants(p.variants),
       avgRating: num(p.avgRating),
       reviewCount: num(p.reviewCount),
       warranty: p.warrantyInfo ?? '',

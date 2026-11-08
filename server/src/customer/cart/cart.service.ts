@@ -117,18 +117,28 @@ export class CartService implements OnModuleInit, OnModuleDestroy {
     }
 
     let variantStock = product.stock;
-    if (dto.variantId) {
+    let variantId = dto.variantId || null;
+
+    if (variantId) {
       const variant = await this.prisma.productVariant.findUnique({
-        where: { id: dto.variantId },
+        where: { id: variantId },
       });
       if (!variant || variant.productId !== dto.productId) {
         throw new NotFoundException('Variant not found');
       }
       variantStock = variant.stock;
+    } else {
+      // Auto-resolve if product has exactly 1 variant (e.g. Free Size three-piece dress)
+      const variants = await this.prisma.productVariant.findMany({
+        where: { productId: dto.productId },
+      });
+      if (variants.length === 1) {
+        variantId = variants[0].id;
+        variantStock = variants[0].stock;
+      }
     }
     const maxQty = Math.min(variantStock, MAX_QTY_PER_LINE);
 
-    const variantId = dto.variantId || null;
     const ownerWhere = cartOwnerWhere(owner);
 
     return this.prisma.$transaction(async (tx) => {
