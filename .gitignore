@@ -50,3 +50,6 @@ next-env.d.ts
 # Server uploads & generated
 /uploads/
 /generated/prisma
+
+
+products-data
