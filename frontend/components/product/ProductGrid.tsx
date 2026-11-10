@@ -68,6 +68,25 @@ export default function ProductGrid({
   const [error, setError] = useState<string | null>(null);
   const first = useRef(true);
   const reqId = useRef(0);
+  const gridContainerRef = useRef<HTMLDivElement>(null);
+
+  const scrollToGridTop = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const el = gridContainerRef.current;
+    // Calculate target Y coordinate with offset for sticky header
+    const targetY = el
+      ? Math.max(0, el.getBoundingClientRect().top + window.scrollY - 90)
+      : 0;
+
+    if (window.scrollY > targetY + 30) {
+      const w = window as unknown as { __lenis?: { scrollTo: (target: number | HTMLElement, opts?: object) => void } };
+      if (w.__lenis) {
+        w.__lenis.scrollTo(targetY, { duration: 0.8 });
+      } else {
+        window.scrollTo({ top: targetY, behavior: "smooth" });
+      }
+    }
+  }, []);
 
   // slugs of the sub-categories that belong to a category
   const subsOf = useCallback(
@@ -102,6 +121,9 @@ export default function ProductGrid({
       first.current = false;
       return;
     }
+    // Automatically bring the user back to the top of the product catalog when filter or sort changes
+    scrollToGridTop();
+
     const id = ++reqId.current;
     setLoading(true);
     setError(null);
@@ -114,6 +136,10 @@ export default function ProductGrid({
         const merged = cats.length > 1 ? sortLocal(dedupe(pages.flatMap((p) => p.products)), sortBy) : pages[0].products;
         setProducts(merged);
         setMeta(cats.length > 1 ? { ...pages[0].meta, total: merged.length, totalPages: 1, page: 1 } : pages[0].meta);
+        // If the resulting list is short (e.g. 1-4 products), ensure the scroll lands at the top of the grid
+        if (merged.length <= 4) {
+          scrollToGridTop();
+        }
       } catch (e) {
         if (id === reqId.current) setError(errorMessage(e));
       } finally {
@@ -121,7 +147,7 @@ export default function ProductGrid({
       }
     }, 150);
     return () => clearTimeout(t);
-  }, [query, filters.categories, lockedCategory, sortBy, subsOf]);
+  }, [query, filters.categories, lockedCategory, sortBy, subsOf, scrollToGridTop]);
 
   async function loadMore() {
     if (loadingMore) return;
@@ -225,7 +251,7 @@ export default function ProductGrid({
   const hasActiveFilters = activeFilters.length > 0;
 
   return (
-    <div className="flex items-start gap-6">
+    <div ref={gridContainerRef} className="flex items-start gap-6">
       {/* Inject noindex when filters are active to prevent crawling of filtered URLs */}
       <NoIndexWhenFiltered noIndex={hasActiveFilters} />
 
