@@ -17,8 +17,17 @@ const colClass = "lg:border-l lg:border-white/10 lg:pl-7";
 export default function SiteFooter({ settings, categories }: { settings: SiteSettings; categories: Category[] }) {
   const pathname = usePathname();
 
-  // Hide the footer on the all products catalog page (/products)
-  if (pathname === "/products" || pathname === "/products/") {
+  // Hide the footer on product catalog pages (/products, /category/*, /brand/*, /search)
+  const isCatalog =
+    pathname === "/products" ||
+    pathname === "/products/" ||
+    pathname?.startsWith("/products?") ||
+    pathname?.startsWith("/category/") ||
+    pathname?.startsWith("/brand/") ||
+    pathname === "/search" ||
+    pathname?.startsWith("/search?");
+
+  if (isCatalog) {
     return null;
   }
 
@@ -32,7 +41,7 @@ export default function SiteFooter({ settings, categories }: { settings: SiteSet
   ];
 
   return (
-    <footer className="relative bg-brand-navy text-white dark:border-t dark:border-border dark:bg-card">
+    <footer id="site-footer" className="site-footer relative bg-brand-navy text-white dark:border-t dark:border-border dark:bg-card">
       <RevealGroup>
         {/* subscribe bar: centred exactly on the footer's top edge (no gap above the navy) */}
         <div className="relative z-10 h-0">

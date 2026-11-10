@@ -51,7 +51,7 @@ async function ProductsContent({ sp }: { sp: Search }) {
       : { lead: "All", accent: "Products" };
 
   return (
-    <div className="bg-background min-h-screen">
+    <div id="products-catalog-page" data-hide-footer="true" className="bg-background min-h-screen">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 pt-6 pb-20">
         <h1 className="mb-5 font-outfit text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
           {heading.lead} <span className="text-accent-text">{heading.accent}</span>

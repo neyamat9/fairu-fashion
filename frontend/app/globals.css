@@ -511,3 +511,12 @@ html body[data-scroll-locked] {
   animation-play-state: paused;
 }
 
+/* Hide footer on product catalog pages (where product cards & sidebar filter exist) */
+body:has([data-hide-footer="true"]) #site-footer,
+body:has(#products-catalog-page) #site-footer,
+body:has(#products-catalog-view) #site-footer,
+body:has([data-hide-footer="true"]) .site-footer {
+  display: none !important;
+}
+
+

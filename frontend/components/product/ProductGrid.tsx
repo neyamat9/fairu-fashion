@@ -251,7 +251,7 @@ export default function ProductGrid({
   const hasActiveFilters = activeFilters.length > 0;
 
   return (
-    <div ref={gridContainerRef} className="flex items-start gap-6">
+    <div ref={gridContainerRef} id="products-catalog-view" data-hide-footer="true" className="flex items-start gap-6">
       {/* Inject noindex when filters are active to prevent crawling of filtered URLs */}
       <NoIndexWhenFiltered noIndex={hasActiveFilters} />
 
