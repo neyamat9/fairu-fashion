@@ -1,3 +1,5 @@
+"use client";
+
 import BrandLogo from "@/components/layout/BrandLogo";
 import NewsletterForm from "@/components/layout/NewsletterForm";
 import SocialIcons from "@/components/layout/SocialIcons";
@@ -6,12 +8,20 @@ import type { SiteSettings } from "@/lib/services/site.service";
 import type { Category } from "@/lib/types";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const headingClass = "mb-5 font-outfit text-lg font-semibold text-white";
 const linkClass = "inline-block text-sm text-white/70 transition-all hover:translate-x-1 hover:text-brand-orange";
 const colClass = "lg:border-l lg:border-white/10 lg:pl-7";
 
 export default function SiteFooter({ settings, categories }: { settings: SiteSettings; categories: Category[] }) {
+  const pathname = usePathname();
+
+  // Hide the footer on the all products catalog page (/products)
+  if (pathname === "/products" || pathname === "/products/") {
+    return null;
+  }
+
   const links = [
     { label: "All products", href: "/products" },
     { label: "Track your order", href: "/track-order" },
